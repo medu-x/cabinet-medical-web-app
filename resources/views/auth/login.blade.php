@@ -146,7 +146,7 @@
             <div class="relative z-10 mt-6 glass-card p-4 rounded-2xl flex items-center gap-3">
                 <img alt="Portrait du Dr Martin Rousseau" class="w-12 h-12 rounded-full object-cover border-2 border-white/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFbjCStiG_XPEAtJM0q6CuqpJebap61-F0hcCdRXtvLf3aBiBVUgTtuSb3bmlJIQso8pR87DNO2Kp09uPq2pat2RK9odIhJBRc1Kp2gpAykhQf-pMdL8m1z_IOzEM1t3DhadyDeGc4OMkUzC-cok3wQQ1lf6ZEfpf7xqdGgP7hVzCU0klOVZECTylEY1023XLf8NhvxpgDe-VT7tJP6SQhUKJc6WFqH-JB9KBmeCi9mN0Nsh-FjLmlvB3Nid1DenubEuZjZGCYmVs" />
                 <div>
-                    <p class="text-sm font-medium">Dr. Martin Rousseau</p>
+                    <p class="text-sm font-medium">Dr. Mohamed Ouhammou</p>
                     <div class="flex items-center gap-1">
                         <span class="material-symbols-outlined text-yellow-400 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
                         <span class="text-xs font-bold">4.9/5 satisfaction patient</span>
@@ -205,7 +205,7 @@
                         <a class="text-primary font-bold hover:underline ml-1 cursor-pointer" href="register">S'inscrire</a>
                     </p>
                     <div class="mt-8 pt-8 border-t border-outline/5">
-                        <a class="inline-flex items-center gap-2 text-xs text-outline hover:text-primary transition-colors" href="">
+                        <a class="inline-flex items-center gap-2 text-xs text-outline hover:text-primary transition-colors" href="{{ url('/') }}#contact">
                             <span class="material-symbols-outlined text-sm">help_outline</span>
                             Besoin d'aide ? Contacter le support
                         </a>

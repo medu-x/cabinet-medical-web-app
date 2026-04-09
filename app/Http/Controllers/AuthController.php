@@ -84,8 +84,8 @@ class AuthController extends Controller
 
         // STEP 2: Attempt to login
         // Auth::attempt() does TWO things:
-        //   1. Finds the user by email
-        //   2. Checks if Hash::check(plain_password, hashed_password) matches
+        //   1. Finds the useecks if Hash::chr by email
+        //   2. Check(plain_password, hashed_password) matches
         // $request->boolean('remember') reads the "remember me" checkbox
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
 
