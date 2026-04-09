@@ -1,58 +1,115 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Project Setup and Collaboration Guide
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Follow this guide to set up the development environment and learn the workflow for contributing to this project.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 1. Prerequisites
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Before starting, ensure you have the following installed:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Laravel Herd**: This provides PHP and Composer.
+- **Node.js & NPM**: Required for compiling styles and scripts.
+- **Git**: To manage code versions.
 
-## Learning Laravel
+**Important**: In Herd Settings, go to the "General" tab and click **"Add to Path"**. Afterward, close and restart your terminal to ensure the commands are recognized.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 2. Initial Installation
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Run these commands in your terminal to get the project files ready:
 
 ```bash
-composer require laravel/boost --dev
+# Clone the project
+git clone https://github.com/medu-x/cabinet-medical-web-app .
 
-php artisan boost:install
+# Install PHP dependencies
+composer install
+
+# Install Frontend dependencies
+npm install
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## 3. Environment and Database Setup
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+We are using SQLite for simplicity. Follow these steps to configure your local environment:
 
-## Code of Conduct
+1. **Create the SQLite file:**
+   - Windows (PowerShell): `type nul > database/database.sqlite`
+   - Mac/Linux: `touch database/database.sqlite`
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+2. **Setup the `.env` file:**
+   - Copy the template: `cp .env.example .env`
+   - Open the `.env` file and change the database settings to:
 
-## Security Vulnerabilities
+```env
+DB_CONNECTION=sqlite
+# You can comment out or delete DB_HOST, DB_PORT, DB_DATABASE, etc.
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+3. **Initialize the application:**
 
-## License
+```bash
+php artisan key:generate
+php artisan migrate
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 4. Running the Project
+
+To see the website in your browser, follow these two steps:
+
+1. **Link the site to Herd:**
+
+
+
+```bash
+herd link
+```
+
+You can now access the site at: `http://<your-folder-name>.test`
+
+-Manual Setup
+
+or manually open the herd application -> choose sites -> link to un existing folder  -> chose folder where you cloned the project then -> open in the browser.
+
+2. **Compile Assets (Tailwind CSS):** Keep this command running in a separate terminal window while you work:
+
+```bash
+npm run dev
+```
+
+---
+
+## 5. Collaboration Workflow
+
+To keep the main code stable, direct pushes to the `main` branch are restricted. Please use the following workflow:
+
+1. **Pull Latest Changes:** Always start your day with:
+   ```bash
+   git pull origin main
+   ```
+
+2. **Create a Feature Branch:**
+   ```bash
+   git checkout -b feature-your-task-name
+   ```
+
+3. **Work and Commit:** Save your progress with:
+   ```bash
+   git add .
+   git commit -m "Description of change"
+   ```
+
+4. **Push your Branch:**
+   ```bash
+   git push origin feature-your-task-name
+   ```
+
+5. **Open a Pull Request:** Go to the GitHub repository online and click **"Compare & pull request."**
+
+> **Note:** I will review your Pull Request and merge it into the `main` branch once it is approved.
