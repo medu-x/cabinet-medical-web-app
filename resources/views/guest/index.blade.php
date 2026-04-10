@@ -129,12 +129,12 @@
                     Une approche éditoriale de la médecine moderne. Alliant expertise clinique de pointe et confort d'un environnement serein pour votre bien-être total.
                 </p>
                 <div class="flex flex-wrap gap-4">
-                    <button class="bg-gradient-to-br from-primary to-primary-container text-white px-8 py-4 rounded-xl font-bold clinical-shadow hover:opacity-90 transition-all">
+                    <a class="bg-gradient-to-br from-primary to-primary-container text-white px-8 py-4 rounded-xl font-bold clinical-shadow hover:opacity-90 transition-all" href="{{ url('/dashboard')}}">
                         Prendre rendez-vous
-                    </button>
-                    <button class="bg-white text-on-surface px-8 py-4 rounded-xl font-bold shadow-sm hover:bg-surface-container-low transition-all">
+                    </a>
+                    <a class="bg-white text-on-surface px-8 py-4 rounded-xl font-bold shadow-sm hover:bg-surface-container-low transition-all" href="#services">
                         Nos services
-                    </button>
+                    </a>
                 </div>
             </div>
             <div class="relative">

@@ -190,15 +190,7 @@
                             <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">login</span>
                         </button>
                     </div>
-                </form>
-                <!-- Alternative Login Methods -->
-                <div class="relative my-8 text-center">
-                    <div class="absolute inset-0 flex items-center">
-                        <div class="w-full border-t border-outline/10"></div>
-                    </div>
-                    <span class="relative bg-surface-container-lowest px-4 text-[10px] uppercase tracking-widest font-bold text-outline">Ou continuer avec</span>
-                </div>
-    
+                </form>    
                 <footer class="mt-10 text-center">
                     <p class="text-on-surface-variant text-sm">
                         Vous n'avez pas encore de compte ?
