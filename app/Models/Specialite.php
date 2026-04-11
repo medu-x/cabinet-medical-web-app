@@ -15,6 +15,6 @@ class Specialite extends Model
     ];
 
 
-    /// get all ();
+    /// get all deja difini dans laravel ();
 
 }

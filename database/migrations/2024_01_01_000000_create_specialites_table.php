@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('specialites', function (Blueprint $table) {
         $table->id();
-        $table->string('nom'); // اسم التخصص (Cardiologie, Dermatologie…)
+        $table->string('nom'); // (Cardiologie, Dermatologie…)
+        $table->string('description');
+        $table->integer('prix_consultation'); // 
         $table->timestamps();
     });
 
