@@ -134,21 +134,38 @@
                 <h1 class="text-4xl font-extrabold tracking-tight text-on-surface mb-2">Prendre un rendez-vous</h1>
                 <p class="text-on-surface-variant">Suivez les étapes ci-dessous pour planifier votre consultation.</p>
             </header>
+            @if (session('success'))
+            <div class="mx-auto mb-4 w-fit px-4 py-2 rounded-lg bg-green-100 text-green-800 text-sm font-semibold">
+                {{ session('success') }}
+            </div>
+            @endif
+
+            @if (session('error'))
+            <div class="mx-auto mb-4 w-fit px-4 py-2 rounded-lg bg-red-100 text-red-800 text-sm font-semibold">
+                {{ session('error') }}
+            </div>
+            @endif
+
             <!-- Stepper Progress -->
+            @php
+            $hasSpecialite = filled($specialiteId);
+            $hasMedecin = filled($medecinId);
+            $hasHeure = filled($selectedHeure);
+            @endphp
             <div class="flex items-center justify-between max-w-2xl">
                 <div class="flex flex-col items-center gap-2 group">
-                    <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold">1</div>
-                    <span class="text-xs font-semibold text-primary">Spécialité</span>
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold {{ $hasSpecialite ? 'bg-primary text-white' : 'bg-surface-container-high text-on-surface-variant' }}">1</div>
+                    <span class="text-xs {{ $hasSpecialite ? 'font-semibold text-primary' : 'font-medium text-on-surface-variant' }}">Spécialité</span>
                 </div>
-                <div class="flex-1 h-px bg-outline-variant mx-4 mb-6"></div>
+                <div class="flex-1 h-px mx-4 mb-6 {{ $hasSpecialite ? 'bg-primary/30' : 'bg-outline-variant' }}"></div>
                 <div class="flex flex-col items-center gap-2">
-                    <div class="w-10 h-10 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold">2</div>
-                    <span class="text-xs font-medium text-on-surface-variant">Spécialiste</span>
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold {{ $hasMedecin ? 'bg-primary text-white' : 'bg-surface-container-high text-on-surface-variant' }}">2</div>
+                    <span class="text-xs {{ $hasMedecin ? 'font-semibold text-primary' : 'font-medium text-on-surface-variant' }}">Spécialiste</span>
                 </div>
-                <div class="flex-1 h-px bg-outline-variant mx-4 mb-6"></div>
+                <div class="flex-1 h-px mx-4 mb-6 {{ $hasMedecin ? 'bg-primary/30' : 'bg-outline-variant' }}"></div>
                 <div class="flex flex-col items-center gap-2">
-                    <div class="w-10 h-10 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold">3</div>
-                    <span class="text-xs font-medium text-on-surface-variant">Heure</span>
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold {{ $hasHeure ? 'bg-primary text-white' : 'bg-surface-container-high text-on-surface-variant' }}">3</div>
+                    <span class="text-xs {{ $hasHeure ? 'font-semibold text-primary' : 'font-medium text-on-surface-variant' }}">Heure</span>
                 </div>
             </div>
             <!-- Bento Grid Section: Step 1 - Choisir une Spécialité -->
@@ -157,60 +174,59 @@
                     <h2 class="text-lg font-bold text-teal-800 mb-4">1. Choisir une Spécialité</h2>
                 </div>
                 <!-- Category Cards -->
-                <button class="group p-6 rounded-xl bg-surface-container-lowest border border-transparent hover:border-primary/20 transition-all text-left shadow-sm hover:shadow-md">
+                @if ($specialites->isEmpty())
+                <p>Aucune spécialité disponible.</p>
+                @else
+                @foreach ($specialites as $specialite)
+
+                <a href="{{ route('dashboard', ['specialite' => $specialite->id]) }}"
+                    class="group p-6 rounded-xl transition-all text-left shadow-sm
+   {{ $specialiteId == $specialite->id
+        ? 'bg-surface-container-lowest border border-primary/40 ring-2 ring-primary/10 shadow-md'
+        : 'bg-surface-container-lowest border border-transparent hover:border-primary/20 hover:shadow-md' }}">
+
                     <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 transition-transform group-hover:scale-110">
-                        <span class="material-symbols-outlined">cardiology</span>
+                        <span class="material-symbols-outlined">{{ config('specialty_icons')[$specialite->nom] ?? 'medical_services' }}</span>
                     </div>
-                    <h3 class="font-bold text-on-surface mb-1">Cardiologie</h3>
-                    <p class="text-xs text-on-surface-variant">Santé cardiaque et vasculaire</p>
-                </button>
-                <button class="group p-6 rounded-xl bg-surface-container-lowest border border-primary/40 ring-2 ring-primary/10 transition-all text-left shadow-sm">
-                    <div class="w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center mb-4">
-                        <span class="material-symbols-outlined">neurology</span>
-                    </div>
-                    <h3 class="font-bold text-on-surface mb-1">Neurologie</h3>
-                    <p class="text-xs text-on-surface-variant">Troubles du système nerveux</p>
-                </button>
-                <button class="group p-6 rounded-xl bg-surface-container-lowest border border-transparent hover:border-primary/20 transition-all text-left shadow-sm hover:shadow-md">
-                    <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 transition-transform group-hover:scale-110">
-                        <span class="material-symbols-outlined">dermatology</span>
-                    </div>
-                    <h3 class="font-bold text-on-surface mb-1">Dermatologie</h3>
-                    <p class="text-xs text-on-surface-variant">Soins de la peau et esthétique</p>
-                </button>
+                    <h3 class="font-bold text-on-surface mb-1">{{$specialite->nom}}</h3>
+                    <p class="text-xs text-on-surface-variant">{{$specialite->description}}</p>
+                </a>
+                @endforeach
+                @endif
+
             </section>
             <!-- Step 2: Spécialistes Disponibles -->
             <section class="space-y-4">
                 <h2 class="text-lg font-bold text-teal-800">2. Spécialistes Disponibles</h2>
                 <div class="grid grid-cols-1 gap-4">
-                    <!-- Specialist Card 1 -->
-                    <div class="flex items-center p-4 rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer border border-transparent hover:border-primary/20">
-                        <img alt="Dr. Claire Vallet" class="w-16 h-16 rounded-lg object-cover" data-alt="headshot of a confident female neurologist with dark hair and glasses in a modern medical clinic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkG4oTDpspnxPYFSy9hkflYMeUbdsaEL_1lPns68rGweieK9rEMEvQFiUiG9Tl4E3M48ExNfCMDxY5QnzQbcFn0uZN11IJ9VgGuMtyWlt2sdU7o5F2Yyq7FM4SoOoK7YQvQiDOQA6H4s81HLq3bBbl-DZ0GSIfb94MkkjITBskrzNhwBGyWzB1mhha6tyWQfMRN9aYpf2KTFAsyegBY0o3oEi0rB8iKpcoZM_dI2CoRh3oB-MgCeuPLFdXR-rv8N8xyzGcvT02z8c" />
-                        <div class="ml-4 flex-1">
-                            <h4 class="font-bold text-on-surface">Dr. Claire Vallet</h4>
-                            <p class="text-xs text-on-surface-variant">Neurologue Senior • 12 ans d'exp.</p>
-                            <div class="flex items-center mt-1 gap-1">
-                                <span class="material-symbols-outlined text-yellow-500 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
-                                <span class="text-xs font-bold">4.9</span>
-                                <span class="text-xs text-on-surface-variant">(120 avis)</span>
+                    @if ($medecins->isEmpty())
+                    <p>Aucune medecin disponible.</p>
+                    @else
+                    @foreach ($medecins as $medecin)
+                    <a href="{{ route('dashboard', ['specialite' => $specialiteId, 'medecin' => $medecin->id]) }}">
+                        <div class="flex items-center p-4 rounded-xl transition-colors border
+   {{ $medecinId == $medecin->id
+        ? 'bg-surface-container-lowest border-primary shadow-sm'
+        : 'bg-surface-container-low border-transparent hover:border-primary/20' }}">
+
+                            <img alt="Dr. Claire Vallet" class="w-16 h-16 rounded-lg object-cover" data-alt="headshot of a confident female neurologist with dark hair and glasses in a modern medical clinic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkG4oTDpspnxPYFSy9hkflYMeUbdsaEL_1lPns68rGweieK9rEMEvQFiUiG9Tl4E3M48ExNfCMDxY5QnzQbcFn0uZN11IJ9VgGuMtyWlt2sdU7o5F2Yyq7FM4SoOoK7YQvQiDOQA6H4s81HLq3bBbl-DZ0GSIfb94MkkjITBskrzNhwBGyWzB1mhha6tyWQfMRN9aYpf2KTFAsyegBY0o3oEi0rB8iKpcoZM_dI2CoRh3oB-MgCeuPLFdXR-rv8N8xyzGcvT02z8c" />
+                            <div class="ml-4 flex-1">
+                                <h4 class="font-bold text-on-surface">Dr. {{ $medecin->user->name }}</h4>
+                                <p class="text-xs text-on-surface-variant"> {{$medecin->specialite->nom }} {{ $medecin->level }} • {{ $medecin->experience }} ans d'exp.</p>
+                                <div class="flex items-center mt-1 gap-1">
+                                    <span class="material-symbols-outlined text-yellow-500 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="text-xs font-bold">{{ number_format($medecin->averageRating(), 1) }}</span>
+                                    <span class="text-xs text-on-surface-variant">({{ $medecin->reviewsCount() }} avis)</span>
+                                </div>
                             </div>
+                            <div class="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">Disponible aujourd'hui</div>
+
                         </div>
-                        <div class="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">Disponible aujourd'hui</div>
-                    </div>
-                    <!-- Specialist Card 2 -->
-                    <div class="flex items-center p-4 rounded-xl bg-surface-container-lowest border border-primary shadow-sm">
-                        <img alt="Dr. Marc Antoine" class="w-16 h-16 rounded-lg object-cover" data-alt="portrait of a professional male doctor with a warm smile in a teal scrubs against a soft blurred hospital background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBzoeSlOy9oADoHiudDt3psnyoJHxq4TwAS4QNDfTGsSyyeyUru-VNwMKFYwsslj7v4jHYV6lZ5RCSZMUMNKMDLWFnUK-l-KuSbE7zPHnIE7DuRyVHPZakoFGJ2T7rX3p4LC57ygmDXY4G91lFm3KUTCaiO1e1DUlPCIH-znTaNh5cGcqpvqmX1kPdwjai50hUq_PJN7olNMXcFoQ1NncGP2lae4NDQ8WZG9wZPXhCwMXSp53WE_PJMqnekNsd4WWDNvuagYsLwuQ" />
-                        <div class="ml-4 flex-1">
-                            <h4 class="font-bold text-on-surface">Dr. Marc Antoine</h4>
-                            <p class="text-xs text-on-surface-variant">Spécialiste en Neurochirurgie</p>
-                            <div class="flex items-center mt-1 gap-1">
-                                <span class="material-symbols-outlined text-yellow-500 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
-                                <span class="text-xs font-bold">5.0</span>
-                                <span class="text-xs text-on-surface-variant">(85 avis)</span>
-                            </div>
-                        </div>
-                        <span class="material-symbols-outlined text-primary">check_circle</span>
-                    </div>
+                    </a>
+
+                    @endforeach
+                    @endif
+
                 </div>
             </section>
             <!-- Step 3: Choisir l'Heure -->
@@ -219,22 +235,39 @@
                 <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm border border-outline-variant/10">
                     <div class="flex justify-between items-center mb-6">
                         <button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors"><span class="material-symbols-outlined">chevron_left</span></button>
-                        <h3 class="font-bold">Mardi, 24 Octobre 2024</h3>
+                        <h3 class="font-bold">{{ \Carbon\Carbon::parse($selectedDate)->locale('fr')->translatedFormat('l, j F Y') }} </h3>
                         <button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors"><span class="material-symbols-outlined">chevron_right</span></button>
+
                     </div>
+                    @if ($slots->isEmpty())
+                    <div class="mx-auto w-fit px-3 py-1 bg-primary/10 text-primary text-xs font-bold whitespace-nowrap rounded-lg">
+                        Choisissez un médecin pour voir les horaires disponibles.
+                    </div>
+                    @else
                     <div class="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                        <button class="py-2 rounded-lg bg-surface-container-low text-xs font-medium hover:bg-primary hover:text-white transition-colors">09:00</button>
-                        <button class="py-2 rounded-lg bg-surface-container-low text-xs font-medium hover:bg-primary hover:text-white transition-colors">09:30</button>
-                        <button class="py-2 rounded-lg bg-primary text-white text-xs font-bold shadow-md shadow-primary/20">10:00</button>
-                        <button class="py-2 rounded-lg bg-surface-container-low text-xs font-medium hover:bg-primary hover:text-white transition-colors">10:30</button>
-                        <button class="py-2 rounded-lg bg-surface-container-low text-xs font-medium opacity-40 cursor-not-allowed">11:00</button>
-                        <button class="py-2 rounded-lg bg-surface-container-low text-xs font-medium hover:bg-primary hover:text-white transition-colors">11:30</button>
-                        <button class="py-2 rounded-lg bg-surface-container-low text-xs font-medium hover:bg-primary hover:text-white transition-colors">14:00</button>
-                        <button class="py-2 rounded-lg bg-surface-container-low text-xs font-medium hover:bg-primary hover:text-white transition-colors">14:30</button>
-                        <button class="py-2 rounded-lg bg-surface-container-low text-xs font-medium hover:bg-primary hover:text-white transition-colors">15:00</button>
-                        <button class="py-2 rounded-lg bg-surface-container-low text-xs font-medium hover:bg-primary hover:text-white transition-colors">15:30</button>
-                        <button class="py-2 rounded-lg bg-surface-container-low text-xs font-medium hover:bg-primary hover:text-white transition-colors">16:00</button>
-                        <button class="py-2 rounded-lg bg-surface-container-low text-xs font-medium hover:bg-primary hover:text-white transition-colors">16:30</button>
+
+                        @foreach ($slots as $slot)
+
+
+                        <a href="{{ route('dashboard', [
+                        'specialite' => $specialiteId,
+                        'medecin' => $medecinId,
+                        'date' => $selectedDate,
+                        'heure' => $slot['time']
+                        ]) }}"
+                            class="block text-center py-2 rounded-lg
+                        {{ $selectedHeure == $slot['time']
+                            ? 'bg-primary text-white text-xs font-bold shadow-md shadow-primary/20'
+                            : 'bg-surface-container-low text-xs font-medium' }}
+                        {{ $slot['available']
+                            ? 'hover:bg-primary hover:text-white transition-colors cursor-pointer'
+                            : 'opacity-40 cursor-not-allowed pointer-events-none' }}">
+                            {{ $slot['time'] }}
+                        </a>
+
+
+                        @endforeach
+                        @endif
                     </div>
                 </div>
             </section>
@@ -260,7 +293,7 @@
                             </div>
                             <div>
                                 <p class="text-xs text-on-surface-variant uppercase tracking-wider font-bold">Spécialité</p>
-                                <p class="font-bold text-on-surface">Neurologie</p>
+                                <p class="font-bold text-on-surface">{{ $selectedSpecialite?->nom ?? 'Aucune spécialité' }}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-4">
@@ -269,7 +302,7 @@
                             </div>
                             <div>
                                 <p class="text-xs text-on-surface-variant uppercase tracking-wider font-bold">Spécialiste</p>
-                                <p class="font-bold text-on-surface">Dr. Marc Antoine</p>
+                                <p class="font-bold text-on-surface"> {{ $selectedMedecin?->user?->name ? 'Dr. ' . $selectedMedecin->user->name : 'Aucun médecin' }}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-4">
@@ -278,27 +311,39 @@
                             </div>
                             <div>
                                 <p class="text-xs text-on-surface-variant uppercase tracking-wider font-bold">Date &amp; Heure</p>
-                                <p class="font-bold text-on-surface">24 Oct. 2024 • 10:00</p>
+                                <p class="font-bold text-on-surface"> @if($selectedDate && $selectedHeure)
+                                    {{ ucfirst(\Carbon\Carbon::parse($selectedDate)->locale('fr')->translatedFormat('j M Y')) }} • {{ $selectedHeure }}
+                                    @else
+                                    Date et heure non sélectionnées
+                                    @endif
+                                </p>
                             </div>
                         </div>
                         <div class="pt-6 border-t border-outline-variant/20">
                             <div class="flex justify-between items-center mb-2">
                                 <span class="text-on-surface-variant">Consultation</span>
-                                <span class="font-bold">65,00 €</span>
+                                <span class="font-bold"> {{ $selectedSpecialite ? number_format($selectedSpecialite->prix_consultation, 2, ',', ' ') . ' DH' : '--' }}</span>
                             </div>
                             <div class="flex justify-between items-center mb-6">
                                 <span class="text-on-surface-variant">Frais de dossier</span>
-                                <span class="text-teal-600 font-bold">OFFERT</span>
+                                <span class="text-teal-600 font-bold">Gratuit</span>
                             </div>
                             <div class="flex justify-between items-center text-lg font-black text-teal-800">
                                 <span>Total</span>
-                                <span>65,00 €</span>
+                                <span> {{ $selectedSpecialite ? number_format($selectedSpecialite->prix_consultation, 2, ',', ' ') . ' DH' : '--' }}</span>
                             </div>
                         </div>
-                        <button class="w-full py-4 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white font-bold text-lg shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">
-                            <span>Confirmer le Rendez-vous</span>
-                            <span class="material-symbols-outlined">arrow_forward</span>
-                        </button>
+                        <form action="{{ route('rendezvous.store') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="medecin_id" value="{{ $medecinId }}">
+                            <input type="hidden" name="date_rendez_vous" value="{{ $selectedDate }}">
+                            <input type="hidden" name="heure_rendez_vous" value="{{ $selectedHeure }}">
+
+                            <button type="submit" class="w-full py-4 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white font-bold text-lg shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">
+                                <span>Confirmer le Rendez-vous</span>
+                                <span class="material-symbols-outlined">arrow_forward</span>
+                            </button>
+                        </form>
                         <p class="text-[10px] text-center text-on-surface-variant px-4">
                             En confirmant, vous acceptez nos <a class="underline" href="#">Conditions d'Utilisation</a> et notre <a class="underline" href="#">Politique de Confidentialité</a>.
                         </p>
