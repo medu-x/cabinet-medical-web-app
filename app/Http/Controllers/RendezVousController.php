@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\RendezVous;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class RendezVousController extends Controller
 {
@@ -58,6 +59,23 @@ class RendezVousController extends Controller
             ->where('patient_id', $user->patient->id)
             ->firstOrFail();
 
-        return view('patient.rendezvous-confirmation', compact('rendezVous'));
+        return view('patient.confirmation', compact('rendezVous'));
+    }
+    public function downloadPdf($id)
+    {
+        $user = Auth::user();
+
+        if (! $user->patient) {
+            abort(403);
+        }
+
+        $rendezVous = RendezVous::with(['medecin.user', 'medecin.specialite', 'patient.user'])
+            ->where('id', $id)
+            ->where('patient_id', $user->patient->id)
+            ->firstOrFail();
+
+        $pdf = Pdf::loadView('patient.confirmation-pdf', compact('rendezVous'));
+
+        return $pdf->download('rendez-vous-' . $rendezVous->id . '.pdf');
     }
 }
