@@ -15,7 +15,8 @@ return new class extends Migration
         $table->id();
         $table->string('nom'); // (Cardiologie, Dermatologie…)
         $table->string('description');
-        $table->integer('prix_consultation'); // 
+        $table->string('photo_path')->nullable();
+        $table->integer('prix_consultation'); //
         $table->timestamps();
     });
 

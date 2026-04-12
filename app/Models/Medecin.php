@@ -55,4 +55,10 @@ class Medecin extends Model
         }
         return 'Junior';
     }
+    public function getPhotoUrlAttribute()
+    {
+        return $this->photo_path
+            ? asset('storage/' . $this->photo_path)
+            : ($this->user?->photo_url ?? asset('images/default-doctor.png'));
+    }
 }

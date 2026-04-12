@@ -35,11 +35,15 @@ Route::get('/admin/dashboard', function () {
 })->name('admin.dashboard')->middleware('auth');
 
 
-// prend le rendez vous 
+// prend le rendez vous
 Route::post('/rendez-vous', [RendezVousController::class, 'storeRendezVous'])
     ->name('rendezvous.store')
     ->middleware('auth');
 
 Route::get('/rendez-vous/{id}/confirmation', [RendezVousController::class, 'confirmation'])
     ->name('rendezvous.confirmation')
+    ->middleware('auth');
+
+Route::get('/rendez-vous/{id}/pdf', [RendezVousController::class, 'downloadPdf'])
+    ->name('rendezvous.pdf')
     ->middleware('auth');

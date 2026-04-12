@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role'])]
+#[Fillable(['name', 'email', 'password', 'role', 'photo_path'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -30,7 +30,14 @@ class User extends Authenticatable
         ];
     }
     public function patient()
-{
-    return $this->hasOne(Patient::class);
-}
+    {
+        return $this->hasOne(Patient::class);
+    }
+
+    public function getPhotoUrlAttribute()
+    {
+        return $this->photo_path
+            ? asset('storage/' . $this->photo_path)
+            : asset('images/default-profile.png');
+    }
 }

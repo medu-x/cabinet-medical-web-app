@@ -10,8 +10,8 @@ return new class extends Migration
     {
         DB::table('users')->insert([
             [
-                'name' => 'Jean Dupont',
-                'email' => 'jean.dupont@example.com',
+                'name' => 'Mohamed ouhammou',
+                'email' => 'MOHAMED@CABINET.COM',
                 'password' => Hash::make('password'),
                 'role' => 'patient',
                 'created_at' => now(),
@@ -32,7 +32,7 @@ return new class extends Migration
     {
         DB::table('users')
             ->whereIn('email', [
-                'jean.dupont@example.com',
+                'MOHAMED@CABINET.COM',
                 'sara.benali@example.com',
             ])
             ->delete();
