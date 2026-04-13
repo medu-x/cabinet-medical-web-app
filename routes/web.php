@@ -16,7 +16,7 @@ Route::get('/', function () {
     return View('guest.index');
 });
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 
 Route::get('/dashboard', function () {
@@ -32,19 +32,19 @@ Route::get('/dashboard', function () {
 
 Route::get('/patient/dashboard', [PatientController::class, 'dashboard'])
     ->name('patient.dashboard')
-    ->middleware('auth');
+    ->middleware(['auth','role:patient']);
 
 Route::get('/doctor/dashboard', function () {
     return view('doctor.dashboard');
-})->name('doctor.dashboard')->middleware('auth');
+})->name('doctor.dashboard')->middleware(['auth','role:doctor']);
 
 Route::get('/secretary/dashboard', function () {
     return view('secritaire.dashboard');
-})->name('secretary.dashboard')->middleware('auth');
+})->name('secretary.dashboard')->middleware(['auth','role:secretary']);
 
 Route::get('/admin/dashboard', function () {
     return view('admin.dashboard');
-})->name('admin.dashboard')->middleware('auth');
+})->name('admin.dashboard')->middleware(['auth','role:admin']);
 
 
 // prend le rendez vous

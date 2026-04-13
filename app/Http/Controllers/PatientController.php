@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Specialite;
 use App\Models\Medecin;
+use Illuminate\Support\Facades\Auth;
 
 
 class PatientController extends Controller
@@ -12,6 +13,12 @@ class PatientController extends Controller
     //
     public function dashboard(Request $request)
     {
+        $user = Auth::user();
+        if ($user->role !== 'patient'){
+            abort(404,'pas autorise');
+
+        }
+        
         $specialites = Specialite::all();
 
         $specialiteId = $request->query('specialite');
@@ -74,6 +81,7 @@ class PatientController extends Controller
 
 
         return view('patient.dashboard', compact(
+            'user',
             'specialites',
             'medecins',
             'specialiteId',

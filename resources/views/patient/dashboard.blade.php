@@ -117,8 +117,8 @@
                 <div class="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
                 <div class="flex items-center gap-3 pl-1">
                     <div class="text-right hidden sm:block">
-                        <p class="text-xs font-bold text-on-surface">###</p>
-                        <p class="text-[10px] text-on-surface-variant">Patient</p>
+                        <p class="text-xs font-bold text-on-surface">{{$user->name}}</p>
+                        <p class="text-[10px] text-on-surface-variant">{{$user->role}}</p>
                     </div>
                     <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-fixed shadow-sm">
                         <img alt="Dr. Smith's Profile" data-alt="portrait of a professional male doctor with a kind expression wearing a white coat and stethoscope in a bright clinical setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAlWR3IYhs7cheWJwvGMiMXTHluzy-gr0Oa-BZJcHqDevNmTfgCfhxq8oqAEVWmsGEwIO9oGdscUE93cId5NUOgZgQc2JVBUeRYdlgnqEgQwogW-cPEzO4Pd7HAqI89ETZ_pWwkl8SC1wwGYoPnesagLdhguKfNyuSolW8dFPNfV8M2i5Gni5P7v90aT7qZvzbqggvIqeWhhmsLRgAw4VgLiPWIaBXVzwTtHBE5r6LlqadXVX_izdB6SqMLsFW2-uZnmGdA3-Ax6g" />
