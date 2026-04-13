@@ -10,7 +10,7 @@ return new class extends Migration
     {
         DB::table('users')->insert([
             [
-                'name' => 'Claire Vallet',
+                'name' => 'Mohamed Ouhammou',
                 'email' => 'claire.vallet@example.com',
                 'password' => Hash::make('password'),
                 'role' => 'doctor',
