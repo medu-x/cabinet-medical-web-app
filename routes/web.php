@@ -50,12 +50,12 @@ Route::get('/admin/dashboard', function () {
 // prend le rendez vous
 Route::post('/rendez-vous', [RendezVousController::class, 'storeRendezVous'])
     ->name('rendezvous.store')
-    ->middleware('auth');
+    ->middleware(['auth','role:patient']);
 
 Route::get('/rendez-vous/{id}/confirmation', [RendezVousController::class, 'confirmation'])
     ->name('rendezvous.confirmation')
-    ->middleware('auth');
+    ->middleware(['auth','role:patient']);
 
 Route::get('/rendez-vous/{id}/pdf', [RendezVousController::class, 'downloadPdf'])
     ->name('rendezvous.pdf')
-    ->middleware('auth');
+    ->middleware(['auth','role:patient']);
