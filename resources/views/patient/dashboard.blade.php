@@ -179,7 +179,7 @@
                 @else
                 @foreach ($specialites as $specialite)
 
-                <a href="{{ route('dashboard', ['specialite' => $specialite->id]) }}"
+                <a href="{{ route('patient.dashboard', ['specialite' => $specialite->id]) }}"
                     class="group p-6 rounded-xl transition-all text-left shadow-sm
    {{ $specialiteId == $specialite->id
         ? 'bg-surface-container-lowest border border-primary/40 ring-2 ring-primary/10 shadow-md'
@@ -203,7 +203,7 @@
                     <p>Aucune medecin disponible.</p>
                     @else
                     @foreach ($medecins as $medecin)
-                    <a href="{{ route('dashboard', ['specialite' => $specialiteId, 'medecin' => $medecin->id]) }}">
+                    <a href="{{ route('patient.dashboard', ['specialite' => $specialiteId, 'medecin' => $medecin->id]) }}">
                         <div class="flex items-center p-4 rounded-xl transition-colors border
    {{ $medecinId == $medecin->id
         ? 'bg-surface-container-lowest border-primary shadow-sm'
@@ -249,7 +249,7 @@
                         @foreach ($slots as $slot)
 
 
-                        <a href="{{ route('dashboard', [
+                        <a href="{{ route('patient.dashboard', [
                         'specialite' => $specialiteId,
                         'medecin' => $medecinId,
                         'date' => $selectedDate,

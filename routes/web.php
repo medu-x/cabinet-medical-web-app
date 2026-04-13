@@ -18,8 +18,20 @@ Route::get('/', function () {
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
-Route::get('/dashboard', [PatientController::class, 'dashboard'])
-    ->name('dashboard')
+
+Route::get('/dashboard', function () {
+    $user = Auth::user();
+
+    return match ($user->role) {
+        'doctor' => redirect()->route('doctor.dashboard'),
+        'secretary' => redirect()->route('secretary.dashboard'),
+        'admin' => redirect()->route('admin.dashboard'),
+        default => redirect()->route('patient.dashboard'),
+    };
+})->name('dashboard')->middleware('auth');
+
+Route::get('/patient/dashboard', [PatientController::class, 'dashboard'])
+    ->name('patient.dashboard')
     ->middleware('auth');
 
 Route::get('/doctor/dashboard', function () {

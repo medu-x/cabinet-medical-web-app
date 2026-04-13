@@ -95,7 +95,7 @@ class AuthController extends Controller
             // STEP 4: Redirect to dashboard
             // Inside login(), after session()->regenerate():
             return redirect()->intended(route('dashboard'));
-            
+
             // intended() remembers where the user was trying to go before being redirected to login
         }
 
@@ -105,19 +105,9 @@ class AuthController extends Controller
             'email' => 'Les identifiants fournis ne correspondent pas.',
         ])->onlyInput('email'); // Keep the email in the form, but clear the password
     }
-    public function redirect(){
-        if (Auth::user()->role == 'doctor') {
-            return view('doctor.dashboard');
-        } elseif (Auth::user()->role == 'secretary') {
-            return view('secritaire.dashboard');
-        } elseif (Auth::user()->role == 'admin'){
-            return view('admin.dashboard');
-        } else {
-            return view('patient.dashboard');
-        }
-    }
-        
-    
+   
+
+
 
     // ==========================================
     // LOGOUT
