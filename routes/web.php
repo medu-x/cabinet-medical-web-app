@@ -35,6 +35,10 @@ Route::get('/patient/dashboard', [PatientController::class, 'dashboard'])
     ->name('patient.dashboard')
     ->middleware(['auth','role:patient']);
 
+Route::get('/patient/mes-rendez-vous', [PatientController::class, 'rendezVousIndex'])
+    ->name('patient.rendezvous.index')
+    ->middleware(['auth','role:patient']);
+
 Route::get('/doctor/dashboard', function () {
     return view('doctor.dashboard');
 })->name('doctor.dashboard')->middleware(['auth','role:doctor']);

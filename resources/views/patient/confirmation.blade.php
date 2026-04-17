@@ -134,7 +134,7 @@
         class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 sticky top-0 z-50 w-full">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-10">
-                <a class="flex items-center gap-2" href="#">
+                <a class="flex items-center gap-2" href="/">
                     <div
                         class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
                         <span class="material-symbols-outlined text-2xl">medical_services</span>
@@ -144,36 +144,32 @@
                 </a>
                 <div class="hidden md:flex gap-8">
                     <a class="text-slate-500 hover:text-primary transition-colors font-medium"
-                        href="#">Accueil</a>
+                        href="/">Accueil</a>
                     <a class="text-slate-500 hover:text-primary transition-colors font-medium"
-                        href="#">Services</a>
-                    <a class="text-slate-500 hover:text-primary transition-colors font-medium" href="#">À
-                        propos</a>
-                    <a class="text-slate-500 hover:text-primary transition-colors font-medium"
-                        href="#">Médecins</a>
-                    <a class="text-slate-500 hover:text-primary transition-colors font-medium"
-                        href="#">Contact</a>
+                        href="{{ route('patient.dashboard') }}">Prendre un RDV</a>
+                    <a class="text-slate-500 hover:text-primary transition-colors font-medium" href="{{ route('patient.rendezvous.index') }}">Mes rendez-vous</a>
                 </div>
             </div>
             <div class="flex items-center gap-4">
-                <button
-                    class="p-2 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors rounded-full relative">
-                    <span class="material-symbols-outlined">notifications</span>
-                    <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
-                </button>
-                <div class="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
                 <div class="flex items-center gap-3 pl-1">
                     <div class="text-right hidden sm:block">
                         <p class="text-xs font-bold text-on-surface">{{$rendezVous->patient->user->name}}</p>
                         <p class="text-[10px] text-on-surface-variant">{{$rendezVous->patient->user->role}}</p>
                     </div>
                     <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-fixed shadow-sm">
-                        <img alt="Dr. Smith's Profile"
+                        <img alt="{{ $rendezVous->patient->user->name }}"
                             class="w-10 h-10 rounded-full object-cover"
-                            data-alt="portrait of a professional male doctor with a kind expression wearing a white coat and stethoscope in a bright clinical setting"
                             src="{{$rendezVous->patient->user->photo_url}}" />
                     </div>
                 </div>
+                {{-- Logout --}}
+                <form action="{{ route('logout') }}" method="GET">
+                    @csrf
+                    <button type="submit" class="flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-red-500 transition-colors px-3 py-2 rounded-lg hover:bg-red-50">
+                        <span class="material-symbols-outlined text-base">logout</span>
+                        <span class="hidden sm:inline">Déconnexion</span>
+                    </button>
+                </form>
             </div>
         </div>
     </nav>
@@ -214,7 +210,7 @@
                         <div>
                             <p class="text-[11px] uppercase tracking-widest text-on-surface-variant font-bold mb-1">
                                 Numéro de CIN</p>
-                            <p class="text-lg font-medium">AB123456</p>
+                            <p class="text-lg font-medium">{{ $rendezVous->patient->cin }}</p>
                         </div>
                         <div>
                             <p class="text-[11px] uppercase tracking-widest text-on-surface-variant font-bold mb-1">
@@ -262,7 +258,7 @@
                             <p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Lieu</p>
                             <p class="font-medium">Cabinet Médical, 123 Rue de la Santé, Marrakech</p>
                             <a class="text-sm text-primary font-semibold mt-2 inline-block hover:underline"
-                                href="https://www.google.com/maps/search/?api=1&query={{ urlencode($rendezVous->medecin->adresse) }}"
+                                href="https://www.google.com/maps/search/?api=1&query=Cabinet+Médical,+123+Rue+de+la+Santé,+Marrakech"
                                 target="_blank">Voir sur la map</a>
                         </div>
                     </div>
