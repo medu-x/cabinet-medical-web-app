@@ -6,6 +6,8 @@ use App\Http\Controllers\PatientController;
 use App\Http\Controllers\RendezVousController;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\DoctorController;
+
 
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
@@ -34,9 +36,24 @@ Route::get('/patient/dashboard', [PatientController::class, 'dashboard'])
     ->name('patient.dashboard')
     ->middleware(['auth','role:patient']);
 
-Route::get('/doctor/dashboard', function () {
-    return view('doctor.dashboard');
-})->name('doctor.dashboard')->middleware(['auth','role:doctor']);
+Route::get('/doctor/dashboard', [DoctorController::class, 'dashboard'])
+    ->name('doctor.dashboard')
+    ->middleware(['auth','role:doctor']);
+
+// zdt hado bach ydina l les pages dyal consultation et ordonnance
+
+Route::get('/doctor/ordonnance/form/{rendezVousId}', [DoctorController::class, 'ordonnanceForm'])
+    ->name('doctor.ordonnance.form');
+
+Route::post('/doctor/ordonnance/store/{rendezVousId}', [DoctorController::class, 'ordonnanceStore'])
+    ->name('doctor.ordonnance.store');
+
+Route::get('/doctor/ordonnance/{id}', [DoctorController::class, 'ordonnancePdf'])
+    ->name('doctor.ordonnance');
+
+    Route::get('/doctor/ordonnances/{patientId}', [DoctorController::class, 'ordonnanceHistory'])->name('doctor.ordonnance.history');
+
+
 
 Route::get('/secretary/dashboard', function () {
     return view('secritaire.dashboard');
