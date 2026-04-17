@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class DoctorController extends Controller
 {
-    // Dashboard: عرض جميع المواعيد ديال الطبيب
+    // Dashboard: njib ga3 lmawa3id ttbib
 public function dashboard()
 {
     $medecin = Medecin::with('rendezVous.patient')->where('user_id', Auth::id())->firstOrFail();
@@ -25,41 +25,42 @@ public function dashboard()
 
 
 
-    // Consultation: إدخال compte-rendu للمريض
+
 
 public function ordonnanceStore(Request $request, $rendezVousId)
 {
-    // نجيب الموعد مع المريض والطبيب
+    // njib lmw3id m3a tbib wlmrid
     $rendezVous = RendezVous::with('patient','medecin')->findOrFail($rendezVousId);
 
-    // جلب البيانات من الفورم
-    $diagnostic = $request->input('diagnostic'); // نوع المرض
-    $prescriptions = $request->input('medicaments'); // جدول الأدوية
+    // njib lbayanat mn lform 
+    $diagnostic = $request->input('diagnostic'); // no3 lmarad
+    $prescriptions = $request->input('medicaments'); // tableau tladwiya
 
-    // نبني النص ديال notes
+
+    // nbniw string notes
     $notesArray = [];
 
-    // التشخيص يكون أول عنصر
+    // nchfofo wach kayn naw3 tlmarad
     if (!empty($diagnostic)) {
         $notesArray[] = "Diagnostic: ".$diagnostic;
     }
 
-    // نضيف كل دواء
+    // nzido ga3 dwyan
     foreach ($prescriptions as $prescription) {
         if (!empty($prescription['nom'])) {
             $notesArray[] = $prescription['nom'].' - '.$prescription['dosage'].' - '.$prescription['duree'].' - '.$prescription['remarques'];
         }
     }
 
-    // نص واحد مفصول بـ "|"
+    // nrj3oh string b separator |
     $notesString = implode(' | ', $notesArray);
 
-    // نخزنها فـ rendezVous
+    // n5znha f rendezVous
     $rendezVous->notes = $notesString;
     $rendezVous->statut = 'terminé';
     $rendezVous->save();
 
-    // توليد PDF باستعمال DomPDF
+    // nsawb PDF
     $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('doctor.ordonnance', [
         'rendezVous' => $rendezVous,
         'diagnostic' => $diagnostic,
@@ -74,20 +75,20 @@ public function ordonnancePdf($rendezVousId)
 {
     $rendezVous = RendezVous::with('patient','medecin')->findOrFail($rendezVousId);
 
-    // نفكك notes باش نجيب التشخيص والأدوية
+    // bach n9sm string wnjib lmarad wdwyan
     $diagnostic = null;
     $prescriptions = [];
 
     if (!empty($rendezVous->notes)) {
         $parts = explode(' | ', $rendezVous->notes);
 
-        // أول عنصر هو التشخيص
+        // now3 tlmarad
         if (str_starts_with($parts[0], 'Diagnostic:')) {
             $diagnostic = str_replace('Diagnostic: ', '', $parts[0]);
             array_shift($parts);
         }
 
-        // الباقي أدوية
+        // dwyan
         foreach ($parts as $p) {
             $fields = explode(' - ', $p);
             $prescriptions[] = [
@@ -117,6 +118,7 @@ public function ordonnanceForm($rendezVousId)
 public function ordonnanceHistory($patientId)
 {
     // نجيب جميع المواعيد ديال هاد المريض اللي فيهم وصفة
+    // njib ga3 lmawa3id ta3 lmrid lidrna lihom ordonnancePDF 
     $rendezVousList = RendezVous::with('medecin','patient')
         ->where('patient_id', $patientId)
         ->whereNotNull('notes')

@@ -11,10 +11,9 @@ class RendezVousSeeder extends Seeder
 {
     public function run(): void
     {
-        $patient = Patient::first();   // أول مريض عندك
-        $medecin = Medecin::first();   // أول طبيب عندك
+        $patient = Patient::first();  
+        $medecin = Medecin::first();   
 
-        // إذا ما عندكش بيانات، خاصك تخلق Patient و Medecin قبل
         if(!$patient || !$medecin) {
             return;
         }
