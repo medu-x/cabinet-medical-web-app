@@ -146,16 +146,7 @@
                 </div>
             </div>
             <!-- Floating Badge Card (Creative North Star Asymmetry) -->
-            <div class="relative z-10 mt-6 glass-card p-4 rounded-2xl flex items-center gap-3">
-                <img class="w-12 h-12 rounded-full object-cover border-2 border-white/20" data-alt="professional portrait of a confident female doctor in white coat smiling with blurred clinical background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTkLpOizcg-KelwMOk32pZfkhvZLDVe2ZBkO3ogLWtFWAaBIXGmbN8NBp6nZcdGCr9v0MalbyiowpRUGxUPKQWIcmfY3ARrRjM4MUWjlttY6oyma1OnZ6p4_noUhQcfSvwJyCIv83JXPoM_-gHTAeEmtYYOgz9E7c9Jqqv3GjjQHUmiMKcFHR2XlLSf3fKwJkjOhCx56SCT5NRXA6UN1aIIC3YiE3k6gM-KzKzzCaLPXFVLgq9e3dIiPYFD2Jf5AnQdT7rUocZP-k" />
-                <div>
-                    <p class="text-sm font-medium">Rejoignez 5,000+ professionnels</p>
-                    <div class="flex items-center gap-1">
-                        <span class="material-symbols-outlined text-yellow-400 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
-                        <span class="text-xs font-bold">4.9/5 satisfaction patient</span>
-                    </div>
-                </div>
-            </div>
+            
         </section>
         <!-- Right Side: Registration Form -->
         <section class="w-full md:w-7/12 p-5 md:p-8 flex flex-col justify-center bg-surface-container-lowest">
@@ -166,47 +157,93 @@
                 </header>
                 <form class="space-y-5" action="/register" method="POST">
                     @csrf
+
+                    {{-- Error messages --}}
+                    @if ($errors->any())
+                        <div class="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm space-y-1">
+                            @foreach ($errors->all() as $error)
+                                <p class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-base">error</span>
+                                    {{ $error }}
+                                </p>
+                            @endforeach
+                        </div>
+                    @endif
+
                     <div class="space-y-1.5">
-                        <label class="text-sm font-semibold text-on-surface-variant ml-1" for="fullname">Nom complet</label>
+                        <label class="text-sm font-semibold text-on-surface-variant ml-1" for="fullname">Nom complet <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">person</span>
                             <input class="w-full pl-12 pr-4 py-3 bg-surface-container-low rounded-xl border-none ring-1 ring-outline/10 focus:ring-2 focus:ring-primary transition-all placeholder:text-outline/50" id="fullname" name="name" placeholder="Jean Dupont" required type="text" value="{{ old('name') }}" />
                         </div>
                     </div>
                     <div class="space-y-1.5">
-                        <label class="text-sm font-semibold text-on-surface-variant ml-1" for="email">Adresse email</label>
+                        <label class="text-sm font-semibold text-on-surface-variant ml-1" for="email">Adresse email <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">mail</span>
                             <input class="w-full pl-12 pr-4 py-3 bg-surface-container-low rounded-xl border-none ring-1 ring-outline/10 focus:ring-2 focus:ring-primary transition-all placeholder:text-outline/50" id="email" name="email" placeholder="nom@exemple.com" required type="email" value="{{ old('email') }}" />
                         </div>
                     </div>
-                    <div class="space-y-1.5">
-                        <label class="text-sm font-semibold text-on-surface-variant ml-1" for="role">Vous êtes...</label>
-                        <div class="relative">
-                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">badge</span>
-                            <select class="w-full pl-12 pr-4 py-3 bg-surface-container-low rounded-xl border-none ring-1 ring-outline/10 focus:ring-2 focus:ring-primary transition-all appearance-none" id="role" name="role" required>
-                                <option disabled="" selected="" value="">Sélectionnez votre rôle</option>
-                                <option value="patient">Patient</option>
-                                <option value="doctor">Médecin</option>
-                                <option value="secretary">Secrétaire</option>
-                            </select>
-                            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
-                        </div>
-                    </div>
+                   
+                   
+
+                    {{-- CIN + Phone (2 columns) --}}
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-1.5">
-                            <label class="text-sm font-semibold text-on-surface-variant ml-1" for="password">Mot de passe</label>
+                            <label class="text-sm font-semibold text-on-surface-variant ml-1" for="cin">CIN <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">badge</span>
+                                <input class="w-full pl-12 pr-4 py-3 bg-surface-container-low rounded-xl border-none ring-1 ring-outline/10 focus:ring-2 focus:ring-primary transition-all placeholder:text-outline/50 uppercase" id="cin" name="cin" placeholder="EC6648" required type="text" value="{{ old('cin') }}" maxlength="20" />
+                            </div>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-sm font-semibold text-on-surface-variant ml-1" for="telephone">Téléphone</label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">phone</span>
+                                <input class="w-full pl-12 pr-4 py-3 bg-surface-container-low rounded-xl border-none ring-1 ring-outline/10 focus:ring-2 focus:ring-primary transition-all placeholder:text-outline/50" id="telephone" name="telephone" placeholder="0612345678" required type="tel" value="{{ old('telephone') }}" maxlength="20" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Date of birth --}}
+                    <div class="space-y-1.5">
+                        <label class="text-sm font-semibold text-on-surface-variant ml-1" for="date_naissance">Date de naissance</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">cake</span>
+                            <input class="w-full pl-12 pr-4 py-3 bg-surface-container-low rounded-xl border-none ring-1 ring-outline/10 focus:ring-2 focus:ring-primary transition-all" id="date_naissance" name="date_naissance" required type="date" value="{{ old('date_naissance') }}" max="{{ date('Y-m-d') }}" />
+                        </div>
+                    </div>
+
+                    {{-- Address --}}
+                    <div class="space-y-1.5">
+                        <label class="text-sm font-semibold text-on-surface-variant ml-1" for="adresse">Adresse</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">home_pin</span>
+                            <input class="w-full pl-12 pr-4 py-3 bg-surface-container-low rounded-xl border-none ring-1 ring-outline/10 focus:ring-2 focus:ring-primary transition-all placeholder:text-outline/50" id="adresse" name="adresse" placeholder="12 Rue Hassan II, Casablanca" required type="text" value="{{ old('adresse') }}" maxlength="255" />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="text-sm font-semibold text-on-surface-variant ml-1" for="password">Mot de passe <span class="text-red-500">*</span></label>
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">lock</span>
                                 <input class="w-full pl-12 pr-4 py-3 bg-surface-container-low rounded-xl border-none ring-1 ring-outline/10 focus:ring-2 focus:ring-primary transition-all placeholder:text-outline/50" id="password" name="password" placeholder="••••••••" required type="password" />
                             </div>
                         </div>
                         <div class="space-y-1.5">
-                            <label class="text-sm font-semibold text-on-surface-variant ml-1" for="password_confirmation">Confirmer</label>
+                            <label class="text-sm font-semibold text-on-surface-variant ml-1" for="password_confirmation">Confirmer <span class="text-red-500">*</span></label>
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">lock_clock</span>
                                 <input class="w-full pl-12 pr-4 py-3 bg-surface-container-low rounded-xl border-none ring-1 ring-outline/10 focus:ring-2 focus:ring-primary transition-all placeholder:text-outline/50" id="password_confirmation" name="password_confirmation" placeholder="••••••••" required type="password" />
                             </div>
+                        </div>
+                    </div>
+                     <div class="flex items-center gap-3 px-4 py-3 bg-primary/10 rounded-xl">
+                        <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">person_check</span>
+                        <div>
+                            <p class="text-sm font-semibold text-primary">Compte Patient</p>
+                            <p class="text-xs text-on-surface-variant">Les comptes médecins et secrétaires sont créés par l'administrateur.</p>
                         </div>
                     </div>
                     <div class="pt-4">

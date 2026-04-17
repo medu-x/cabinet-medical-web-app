@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\RendezVousController;
+use App\Http\Controllers\PasswordResetController;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 
@@ -59,3 +60,12 @@ Route::get('/rendez-vous/{id}/confirmation', [RendezVousController::class, 'conf
 Route::get('/rendez-vous/{id}/pdf', [RendezVousController::class, 'downloadPdf'])
     ->name('rendezvous.pdf')
     ->middleware(['auth','role:patient']);
+
+// Password reset (6-digit code flow)
+Route::get('/forgot-password',  [PasswordResetController::class, 'showRequestForm'])->name('password.request');
+Route::post('/forgot-password', [PasswordResetController::class, 'sendCode'])->name('password.email');
+Route::get('/resend-code',      [PasswordResetController::class, 'resendCode'])->name('password.resend');
+Route::get('/verify-code',      [PasswordResetController::class, 'showVerifyForm'])->name('password.verify');
+Route::post('/verify-code',     [PasswordResetController::class, 'verifyCode'])->name('password.verify.submit');
+Route::get('/reset-password',   [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password',  [PasswordResetController::class, 'resetPassword'])->name('password.update');

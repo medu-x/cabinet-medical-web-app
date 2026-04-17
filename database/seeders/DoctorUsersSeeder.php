@@ -1,12 +1,14 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-return new class extends Migration
+class DoctorUsersSeeder extends Seeder
 {
-    public function up(): void
+    public function run(): void
     {
         DB::table('users')->insert([
             [
@@ -27,14 +29,4 @@ return new class extends Migration
             ],
         ]);
     }
-
-    public function down(): void
-    {
-        DB::table('users')
-            ->whereIn('email', [
-                'claire.vallet@example.com',
-                'marc.antoine@example.com',
-            ])
-            ->delete();
-    }
-};
+}

@@ -1,11 +1,13 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-return new class extends Migration
+class AvisTableSeeder extends Seeder
 {
-    public function up(): void
+    public function run(): void
     {
         DB::table('avis')->insert([
             [
@@ -24,14 +26,4 @@ return new class extends Migration
             ],
         ]);
     }
-
-    public function down(): void
-    {
-        DB::table('avis')
-            ->whereIn('commentaire', [
-                'Tres bonne consultation, claire et rassurante.',
-                'Bon diagnostic et explications utiles.',
-            ])
-            ->delete();
-    }
-};
+}

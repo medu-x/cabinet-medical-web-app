@@ -20,6 +20,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->string('role')->default('patient');
             $table->string('photo_path')->nullable();
+            $table->string('password_reset_token')->nullable();
             $table->timestamps();
         });
 

@@ -1,11 +1,13 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-return new class extends Migration
+class PatientsTableSeeder extends Seeder
 {
-    public function up(): void
+    public function run(): void
     {
         DB::table('patients')->insert([
             [
@@ -26,11 +28,4 @@ return new class extends Migration
             ],
         ]);
     }
-
-    public function down(): void
-    {
-        DB::table('patients')
-            ->whereIn('user_id', [3, 4])
-            ->delete();
-    }
-};
+}

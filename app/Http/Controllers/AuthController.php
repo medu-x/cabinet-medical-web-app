@@ -6,6 +6,7 @@ use Illuminate\Http\Request;          // Gives us access to form data ($request-
 use Illuminate\Support\Facades\Auth;  // Laravel's authentication system (login, logout, check if logged in)
 use Illuminate\Support\Facades\Hash;  // Password encryption (never store plain passwords!)
 use App\Models\User;                  // Our User model to interact with the 'users' table
+use App\Models\Patient;               // Patient profile linked to a user
 
 class AuthController extends Controller
 {
@@ -33,10 +34,13 @@ class AuthController extends Controller
         // If validation fails, Laravel AUTOMATICALLY redirects back to the form
         // with error messages — you don't need to write any if/else for that!
         $validated = $request->validate([
-            'name'     => 'required|string|max:255',          // Must exist, be text, max 255 chars
-            'email'    => 'required|email|unique:users',      // Must be valid email & not already in DB
-            'password' => 'required|min:6|confirmed',         // Min 6 chars & must match password_confirmation field
-            'role'     => 'required|in:patient,doctor,secretary', // Must be one of these 3 values
+            'name'              => 'required|string|max:255',
+            'email'             => 'required|email|unique:users',
+            'password'          => 'required|min:6|confirmed',
+            'cin'               => 'required|string|max:20|unique:patients,cin',
+            'telephone'         => 'nullable|string|max:20',
+            'adresse'           => 'nullable|string|max:255',
+            'date_naissance'    => 'nullable|date|before:today',
         ]);
 
         // STEP 2: Create the user in the database
@@ -46,7 +50,16 @@ class AuthController extends Controller
             'name'     => $validated['name'],
             'email'    => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role'     => $validated['role'],
+            'role'     => 'patient', // Public registration always creates a patient account
+        ]);
+
+        // Create the linked Patient profile row
+        Patient::create([
+            'user_id'        => $user->id,
+            'cin'            => $validated['cin'],
+            'telephone'      => $validated['telephone'],
+            'adresse'        => $validated['adresse'],
+            'date_naissance' => $validated['date_naissance'],
         ]);
 
         // STEP 3: Log the user in immediately after registration

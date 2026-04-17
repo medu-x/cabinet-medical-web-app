@@ -163,8 +163,17 @@
                 </header>
                 <form class="space-y-5" action="/login" method="POST">
                     @csrf
+
+                    {{-- Success message (e.g. after password reset) --}}
+                    @if (session('success'))
+                        <div class="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 text-sm flex items-start gap-2">
+                            <span class="material-symbols-outlined text-base mt-0.5">check_circle</span>
+                            <span>{{ session('success') }}</span>
+                        </div>
+                    @endif
+
                     <div class="space-y-1.5">
-                        <label class="text-sm font-semibold text-on-surface-variant ml-1" for="email">Adresse email</label>
+                        <label class="text-sm font-semibold text-on-surface-variant ml-1" for="email">Adresse email <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">mail</span>
                             <input class="w-full pl-12 pr-4 py-3 bg-surface-container-low rounded-xl border-none ring-1 ring-outline/10 focus:ring-2 focus:ring-primary transition-all placeholder:text-outline/50" id="email" name="email" placeholder="nom@exemple.com" required="" type="email" />
@@ -172,8 +181,8 @@
                     </div>
                     <div class="space-y-1.5">
                         <div class="flex justify-between items-center px-1">
-                            <label class="text-sm font-semibold text-on-surface-variant" for="password">Mot de passe</label>
-                            <a class="text-xs font-bold text-primary hover:underline" href="#">Oublié ?</a>
+                            <label class="text-sm font-semibold text-on-surface-variant" for="password">Mot de passe <span class="text-red-500">*</span></label>
+                            <a class="text-xs font-bold text-primary hover:underline" href="{{ route('password.request') }}">Oublié ?</a>
                         </div>
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">lock</span>
@@ -184,6 +193,15 @@
                         <input class="w-4 h-4 rounded border-outline/30 text-primary focus:ring-primary cursor-pointer" id="remember" name="remember" type="checkbox" />
                         <label class="ml-3 text-sm text-on-surface-variant cursor-pointer" for="remember">Se souvenir de moi</label>
                     </div>
+
+                    {{-- Login error message --}}
+                    @if ($errors->any())
+                        <div class="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm flex items-start gap-2">
+                            <span class="material-symbols-outlined text-base mt-0.5">error</span>
+                            <span>{{ $errors->first() }}</span>
+                        </div>
+                    @endif
+
                     <div class="pt-4">
                         <button class="w-full py-4 px-6 bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold rounded-xl shadow-[0_4px_20px_-2px_rgba(0,104,118,0.25)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 group" type="submit">
                             Se connecter
