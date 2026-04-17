@@ -20,7 +20,7 @@ public function dashboard()
     $totalConsultations = $medecin->rendezVous->where('statut', 'terminé')->count();
     $waiting = $medecin->rendezVous->where('statut', 'en attente')->count();
 
-    return view('doctor.dashboard', compact('medecin','totalPatients','totalConsultations','waiting'));
+    return view('doctor.dashboard1', compact('medecin','totalPatients','totalConsultations','waiting'));
 }
 
 
@@ -32,7 +32,7 @@ public function ordonnanceStore(Request $request, $rendezVousId)
     // njib lmw3id m3a tbib wlmrid
     $rendezVous = RendezVous::with('patient','medecin')->findOrFail($rendezVousId);
 
-    // njib lbayanat mn lform 
+    // njib lbayanat mn lform
     $diagnostic = $request->input('diagnostic'); // no3 lmarad
     $prescriptions = $request->input('medicaments'); // tableau tladwiya
 
@@ -118,7 +118,7 @@ public function ordonnanceForm($rendezVousId)
 public function ordonnanceHistory($patientId)
 {
     // نجيب جميع المواعيد ديال هاد المريض اللي فيهم وصفة
-    // njib ga3 lmawa3id ta3 lmrid lidrna lihom ordonnancePDF 
+    // njib ga3 lmawa3id ta3 lmrid lidrna lihom ordonnancePDF
     $rendezVousList = RendezVous::with('medecin','patient')
         ->where('patient_id', $patientId)
         ->whereNotNull('notes')
