@@ -57,13 +57,20 @@ class PatientController extends Controller
                 ->pluck('heure_rendez_vous')
                 ->map(fn($time) => substr($time, 0, 5))
                 ->toArray();
-            $slots = collect($allSlots)->map(function ($slot) use ($bookedSlots) {
+            
+            $isToday = $selectedDate === now()->toDateString();
+            
+            $slots = collect($allSlots)->map(function ($slot) use ($bookedSlots,$isToday) {
+                $isBooked = in_array($slot, $bookedSlots);
+                $hasPassed = $isToday && $slot <= now()->addMinutes(60)->format('H:i');
                 return [
                     'time' => $slot,
-                    'available' => !in_array($slot, $bookedSlots),
+                    'available' => !$isBooked && !$hasPassed,
                 ];
             });
         }
+
+        
 
         // form handling final request post !
         $selectedSpecialite = null;

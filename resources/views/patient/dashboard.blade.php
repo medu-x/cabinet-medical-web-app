@@ -236,11 +236,30 @@
                 <h2 class="text-lg font-bold text-teal-800">3. Choisir l'Heure</h2>
                 <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm border border-outline-variant/10">
                     <div class="flex justify-between items-center mb-6">
-                        <button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors"><span class="material-symbols-outlined">chevron_left</span></button>
-                        <h3 class="font-bold">{{ \Carbon\Carbon::parse($selectedDate)->locale('fr')->translatedFormat('l, j F Y') }} </h3>
-                        <button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors"><span class="material-symbols-outlined">chevron_right</span></button>
-
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary">calendar_today</span>
+                            <h3 class="font-bold">{{ \Carbon\Carbon::parse($selectedDate)->locale('fr')->translatedFormat('l, j F Y') }}</h3>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <label class="text-xs text-slate-500 font-medium whitespace-nowrap">Changer la date :</label>
+                            <input
+                                type="date"
+                                id="date-picker"
+                                min="{{ now()->toDateString() }}"
+                                value="{{ $selectedDate }}"
+                                class="border border-slate-200 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer"
+                                onchange="updateDate(this.value)">
+                        </div>
                     </div>
+                    <script>
+                        function updateDate(date) {
+                            const url = new URL(window.location.href);
+                            url.searchParams.set('date', date);
+                            // Reset selected hour when date changes
+                            url.searchParams.delete('heure');
+                            window.location.href = url.toString();
+                        }
+                    </script>
                     @if ($slots->isEmpty())
                     <div class="mx-auto w-fit px-3 py-1 bg-primary/10 text-primary text-xs font-bold whitespace-nowrap rounded-lg">
                         Choisissez un médecin pour voir les horaires disponibles.
@@ -341,7 +360,22 @@
                             <input type="hidden" name="date_rendez_vous" value="{{ $selectedDate }}">
                             <input type="hidden" name="heure_rendez_vous" value="{{ $selectedHeure }}">
 
-                            <button type="submit" class="w-full py-4 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white font-bold text-lg shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">
+                            @if(session('error'))
+                                <div class="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-base">error</span>
+                                    {{ session('error') }}
+                                </div>
+                            @endif
+
+                            @php
+                                $canSubmit = $medecinId && $selectedHeure;
+                            @endphp
+
+                            <button
+                                type="submit"
+                                {{ !$canSubmit ? 'disabled' : '' }}
+                                class="w-full py-4 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white font-bold text-lg shadow-lg shadow-primary/20 flex items-center justify-center gap-2
+                                    {{ $canSubmit ? 'hover:scale-[1.02] transition-transform cursor-pointer' : 'opacity-40 cursor-not-allowed' }}">
                                 <span>Confirmer le Rendez-vous</span>
                                 <span class="material-symbols-outlined">arrow_forward</span>
                             </button>
