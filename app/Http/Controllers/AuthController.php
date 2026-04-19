@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;          // Gives us access to form data ($request->name, $request->email, etc.)
-use Illuminate\Support\Facades\Auth;  // Laravel's authentication system (login, logout, check if logged in)
-use Illuminate\Support\Facades\Hash;  // Password encryption (never store plain passwords!)
-use App\Models\User;                  // Our User model to interact with the 'users' table
-use App\Models\Patient;               // Patient profile linked to a user
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+use App\Models\Patient;
+use App\Models\DossierMedical;
 
 class AuthController extends Controller
 {
@@ -54,12 +55,20 @@ class AuthController extends Controller
         ]);
 
         // Create the linked Patient profile row
-        Patient::create([
+        $patient = Patient::create([
             'user_id'        => $user->id,
             'cin'            => $validated['cin'],
             'telephone'      => $validated['telephone'],
             'adresse'        => $validated['adresse'],
             'date_naissance' => $validated['date_naissance'],
+        ]);
+
+        // Automatically create an empty dossier médical for this patient
+        DossierMedical::create([
+            'patient_id'     => $patient->id,
+            'groupe_sanguin' => null,
+            'allergies'      => null,
+            'antecedents'    => null,
         ]);
 
         // STEP 3: Log the user in immediately after registration

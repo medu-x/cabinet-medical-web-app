@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             PatientUsersSeeder::class,
             PatientsTableSeeder::class,
             RendezVousTableSeeder::class,
+            TodayRendezVousSeeder::class,
             AvisTableSeeder::class,
             AdminUserSeeder::class,
         ]);

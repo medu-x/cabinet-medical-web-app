@@ -12,4 +12,9 @@ class Patient extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function dossierMedical()
+    {
+        return $this->hasOne(\App\Models\DossierMedical::class);
+    }
 }
