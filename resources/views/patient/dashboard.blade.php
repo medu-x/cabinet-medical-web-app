@@ -95,35 +95,37 @@
     <nav id="navbar" class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 sticky top-0 z-50 w-full">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-10">
-                <a class="flex items-center gap-2" href="#">
+                {{-- Logo → guest home --}}
+                <a class="flex items-center gap-2" href="/">
                     <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
                         <span class="material-symbols-outlined text-2xl">medical_services</span>
                     </div>
                     <span class="text-xl font-bold tracking-tight text-teal-800 dark:text-teal-300">Cabinet Médical</span>
                 </a>
                 <div class="hidden md:flex gap-8">
-                    <a class="text-slate-500 hover:text-primary transition-colors font-medium" href="#">Accueil</a>
-                    <a class="text-slate-500 hover:text-primary transition-colors font-medium" href="#">Services</a>
-                    <a class="text-slate-500 hover:text-primary transition-colors font-medium" href="#">À propos</a>
-                    <a class="text-slate-500 hover:text-primary transition-colors font-medium" href="#">Médecins</a>
-                    <a class="text-slate-500 hover:text-primary transition-colors font-medium" href="#">Contact</a>
+                    <a class="text-slate-500 hover:text-primary transition-colors font-medium" href="/">Accueil</a>
+                    <a class="text-primary font-semibold" href="{{ route('patient.dashboard') }}">Prendre un RDV</a>
+                    <a class="text-slate-500 hover:text-primary transition-colors font-medium" href="{{ route('patient.rendezvous.index') }}">Mes rendez-vous</a>
                 </div>
             </div>
             <div class="flex items-center gap-4">
-                <button class="p-2 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors rounded-full relative">
-                    <span class="material-symbols-outlined">notifications</span>
-                    <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
-                </button>
-                <div class="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
                 <div class="flex items-center gap-3 pl-1">
                     <div class="text-right hidden sm:block">
                         <p class="text-xs font-bold text-on-surface">{{$user->name}}</p>
                         <p class="text-[10px] text-on-surface-variant">{{$user->role}}</p>
                     </div>
                     <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-fixed shadow-sm">
-                        <img alt="Dr. Smith's Profile" data-alt="portrait of a professional male doctor with a kind expression wearing a white coat and stethoscope in a bright clinical setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAlWR3IYhs7cheWJwvGMiMXTHluzy-gr0Oa-BZJcHqDevNmTfgCfhxq8oqAEVWmsGEwIO9oGdscUE93cId5NUOgZgQc2JVBUeRYdlgnqEgQwogW-cPEzO4Pd7HAqI89ETZ_pWwkl8SC1wwGYoPnesagLdhguKfNyuSolW8dFPNfV8M2i5Gni5P7v90aT7qZvzbqggvIqeWhhmsLRgAw4VgLiPWIaBXVzwTtHBE5r6LlqadXVX_izdB6SqMLsFW2-uZnmGdA3-Ax6g" />
+                        <img alt="{{ $user->name }}" class="w-10 h-10 object-cover" src="{{ $user->photo_url }}" />
                     </div>
                 </div>
+                {{-- Logout --}}
+                <form action="{{ route('logout') }}" method="GET">
+                    @csrf
+                    <button type="submit" class="flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-red-500 transition-colors px-3 py-2 rounded-lg hover:bg-red-50">
+                        <span class="material-symbols-outlined text-base">logout</span>
+                        <span class="hidden sm:inline">Déconnexion</span>
+                    </button>
+                </form>
             </div>
         </div>
     </nav>
@@ -209,7 +211,7 @@
         ? 'bg-surface-container-lowest border-primary shadow-sm'
         : 'bg-surface-container-low border-transparent hover:border-primary/20' }}">
 
-                            <img alt="Dr. Claire Vallet" class="w-16 h-16 rounded-lg object-cover" data-alt="headshot of a confident female neurologist with dark hair and glasses in a modern medical clinic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkG4oTDpspnxPYFSy9hkflYMeUbdsaEL_1lPns68rGweieK9rEMEvQFiUiG9Tl4E3M48ExNfCMDxY5QnzQbcFn0uZN11IJ9VgGuMtyWlt2sdU7o5F2Yyq7FM4SoOoK7YQvQiDOQA6H4s81HLq3bBbl-DZ0GSIfb94MkkjITBskrzNhwBGyWzB1mhha6tyWQfMRN9aYpf2KTFAsyegBY0o3oEi0rB8iKpcoZM_dI2CoRh3oB-MgCeuPLFdXR-rv8N8xyzGcvT02z8c" />
+                            <img alt="Dr. {{ $medecin->user->name }}" class="w-16 h-16 rounded-lg object-cover" src="{{ $medecin->photo_url }}" />
                             <div class="ml-4 flex-1">
                                 <h4 class="font-bold text-on-surface">Dr. {{ $medecin->user->name }}</h4>
                                 <p class="text-xs text-on-surface-variant"> {{$medecin->specialite->nom }} {{ $medecin->level }} • {{ $medecin->experience }} ans d'exp.</p>
@@ -234,11 +236,30 @@
                 <h2 class="text-lg font-bold text-teal-800">3. Choisir l'Heure</h2>
                 <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm border border-outline-variant/10">
                     <div class="flex justify-between items-center mb-6">
-                        <button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors"><span class="material-symbols-outlined">chevron_left</span></button>
-                        <h3 class="font-bold">{{ \Carbon\Carbon::parse($selectedDate)->locale('fr')->translatedFormat('l, j F Y') }} </h3>
-                        <button class="p-2 hover:bg-surface-container-low rounded-lg transition-colors"><span class="material-symbols-outlined">chevron_right</span></button>
-
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary">calendar_today</span>
+                            <h3 class="font-bold">{{ \Carbon\Carbon::parse($selectedDate)->locale('fr')->translatedFormat('l, j F Y') }}</h3>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <label class="text-xs text-slate-500 font-medium whitespace-nowrap">Changer la date :</label>
+                            <input
+                                type="date"
+                                id="date-picker"
+                                min="{{ now()->toDateString() }}"
+                                value="{{ $selectedDate }}"
+                                class="border border-slate-200 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer"
+                                onchange="updateDate(this.value)">
+                        </div>
                     </div>
+                    <script>
+                        function updateDate(date) {
+                            const url = new URL(window.location.href);
+                            url.searchParams.set('date', date);
+                            // Reset selected hour when date changes
+                            url.searchParams.delete('heure');
+                            window.location.href = url.toString();
+                        }
+                    </script>
                     @if ($slots->isEmpty())
                     <div class="mx-auto w-fit px-3 py-1 bg-primary/10 text-primary text-xs font-bold whitespace-nowrap rounded-lg">
                         Choisissez un médecin pour voir les horaires disponibles.
@@ -339,7 +360,22 @@
                             <input type="hidden" name="date_rendez_vous" value="{{ $selectedDate }}">
                             <input type="hidden" name="heure_rendez_vous" value="{{ $selectedHeure }}">
 
-                            <button type="submit" class="w-full py-4 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white font-bold text-lg shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">
+                            @if(session('error'))
+                                <div class="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-base">error</span>
+                                    {{ session('error') }}
+                                </div>
+                            @endif
+
+                            @php
+                                $canSubmit = $medecinId && $selectedHeure;
+                            @endphp
+
+                            <button
+                                type="submit"
+                                {{ !$canSubmit ? 'disabled' : '' }}
+                                class="w-full py-4 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white font-bold text-lg shadow-lg shadow-primary/20 flex items-center justify-center gap-2
+                                    {{ $canSubmit ? 'hover:scale-[1.02] transition-transform cursor-pointer' : 'opacity-40 cursor-not-allowed' }}">
                                 <span>Confirmer le Rendez-vous</span>
                                 <span class="material-symbols-outlined">arrow_forward</span>
                             </button>
