@@ -109,25 +109,21 @@
 </div>
 </div>
 <nav class="flex-1 space-y-1">
-<a class="flex items-center px-6 py-3 text-sm font-medium tracking-wide text-slate-600 hover:text-teal-600 hover:bg-slate-100 transition-all duration-200" href="#">
+<a class="flex items-center px-6 py-3 text-sm font-medium tracking-wide text-slate-600 hover:text-teal-600 hover:bg-slate-100 transition-all duration-200" href="{{ route('admin.dashboard') }}">
 <span class="material-symbols-outlined mr-3">dashboard</span>
                 Dashboard
             </a>
-<a class="flex items-center px-6 py-3 text-sm font-medium tracking-wide text-slate-600 hover:text-teal-600 hover:bg-slate-100 transition-all duration-200" href="#">
+<a class="flex items-center px-6 py-3 text-sm font-medium tracking-wide text-teal-700 border-r-4 border-teal-600 bg-teal-50/50 transition-all duration-200" href="{{ route('admin.patients') }}">
 <span class="material-symbols-outlined mr-3">group</span>
                 Patients
             </a>
-<a class="flex items-center px-6 py-3 text-sm font-medium tracking-wide text-teal-700 border-r-4 border-teal-600 bg-teal-50/50 transition-all duration-200" href="#">
+<a class="flex items-center px-6 py-3 text-sm font-medium tracking-wide text-slate-600 hover:text-teal-600 hover:bg-slate-100 transition-all duration-200" href="{{ route('admin.secrataires') }}">
 <span class="material-symbols-outlined mr-3" style="font-variation-settings: 'FILL' 1;">badge</span>
-                Secretaries
+                Secrétaires
             </a>
-<a class="flex items-center px-6 py-3 text-sm font-medium tracking-wide text-slate-600 hover:text-teal-600 hover:bg-slate-100 transition-all duration-200" href="#">
+<a class="flex items-center px-6 py-3 text-sm font-medium tracking-wide text-slate-600 hover:text-teal-600 hover:bg-slate-100 transition-all duration-200" href="{{ route('admin.doctors') }}">
 <span class="material-symbols-outlined mr-3">medical_services</span>
-                Medical Staff
-            </a>
-<a class="flex items-center px-6 py-3 text-sm font-medium tracking-wide text-slate-600 hover:text-teal-600 hover:bg-slate-100 transition-all duration-200" href="#">
-<span class="material-symbols-outlined mr-3">history</span>
-                Audit Logs
+                Médecins
             </a>
 </nav>
 <div class="mt-auto px-4 space-y-1">

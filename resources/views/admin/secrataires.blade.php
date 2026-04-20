@@ -103,26 +103,21 @@
 </div>
 </div>
 <nav class="flex-1 px-3 space-y-1">
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-300 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all duration-200 ease-in-out rounded-xl text-sm font-medium tracking-wide" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-300 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all duration-200 ease-in-out rounded-xl text-sm font-medium tracking-wide" href="{{ route('admin.dashboard') }}">
 <span class="material-symbols-outlined">dashboard</span>
             Dashboard
         </a>
-<!-- Patients is Active -->
-<a class="flex items-center gap-3 px-4 py-3 text-teal-700 dark:text-teal-400 border-r-4 border-teal-600 dark:border-teal-400 bg-teal-50/50 dark:bg-teal-900/10 transition-all duration-200 ease-in-out rounded-xl text-sm font-medium tracking-wide" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-300 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all duration-200 ease-in-out rounded-xl text-sm font-medium tracking-wide" href="{{ route('admin.patients') }}">
 <span class="material-symbols-outlined">group</span>
             Patients
         </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-300 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all duration-200 ease-in-out rounded-xl text-sm font-medium tracking-wide" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-teal-700 dark:text-teal-400 border-r-4 border-teal-600 dark:border-teal-400 bg-teal-50/50 dark:bg-teal-900/10 transition-all duration-200 ease-in-out rounded-xl text-sm font-medium tracking-wide" href="{{ route('admin.secrataires') }}">
 <span class="material-symbols-outlined">badge</span>
-            Secretaries
+            Secrétaires
         </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-300 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all duration-200 ease-in-out rounded-xl text-sm font-medium tracking-wide" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-300 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all duration-200 ease-in-out rounded-xl text-sm font-medium tracking-wide" href="{{ route('admin.doctors') }}">
 <span class="material-symbols-outlined">medical_services</span>
-            Medical Staff
-        </a>
-<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-300 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all duration-200 ease-in-out rounded-xl text-sm font-medium tracking-wide" href="#">
-<span class="material-symbols-outlined">history</span>
-            Audit Logs
+            Médecins
         </a>
 </nav>
 <div class="px-6 mt-6">

@@ -121,29 +121,24 @@
         </div>
         <nav class="flex-1 space-y-1">
             <a class="flex items-center gap-3 px-4 py-3 bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 rounded-xl transition-all duration-200"
-                href="#">
+                href="{{ route('admin.dashboard') }}">
                 <span class="material-symbols-outlined filled-icon">dashboard</span>
                 <span class="text-sm font-medium">Dashboard</span>
             </a>
             <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 rounded-xl transition-all duration-200"
-                href="#">
-                <span class="material-symbols-outlined">calendar_today</span>
-                <span class="text-sm font-medium">Appointments</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 rounded-xl transition-all duration-200"
-                href="#">
+                href="{{ route('admin.patients') }}">
                 <span class="material-symbols-outlined">group</span>
                 <span class="text-sm font-medium">Patients</span>
             </a>
             <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 rounded-xl transition-all duration-200"
-                href="#">
-                <span class="material-symbols-outlined">description</span>
-                <span class="text-sm font-medium">Medical Records</span>
+                href="{{ route('admin.secrataires') }}">
+                <span class="material-symbols-outlined">badge</span>
+                <span class="text-sm font-medium">Secrétaires</span>
             </a>
             <a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 rounded-xl transition-all duration-200"
-                href="#">
+                href="{{ route('admin.doctors') }}">
                 <span class="material-symbols-outlined">medical_services</span>
-                <span class="text-sm font-medium">Inventory</span>
+                <span class="text-sm font-medium">Médecins</span>
             </a>
         </nav>
         <div class="mt-auto pt-6 border-t border-slate-200 space-y-1">

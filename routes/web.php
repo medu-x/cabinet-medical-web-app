@@ -48,6 +48,18 @@ Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
     ->name('admin.dashboard')
     ->middleware(['auth','role:admin']);
 
+Route::get('/admin/patients', function() {
+    return view('admin.patients');
+})->name('admin.patients')->middleware(['auth','role:admin']);
+
+Route::get('/admin/secrataires', function() {
+    return view('admin.secrataires');
+})->name('admin.secrataires')->middleware(['auth','role:admin']);
+
+Route::get('/admin/doctors', function() {
+    return view('admin.doctors');
+})->name('admin.doctors')->middleware(['auth','role:admin']);
+
 
 // prend le rendez vous
 Route::post('/rendez-vous', [RendezVousController::class, 'storeRendezVous'])
