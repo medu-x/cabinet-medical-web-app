@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\RendezVousController;
@@ -46,9 +47,22 @@ Route::get('/secretary/dashboard', function () {
     return view('secritaire.dashboard');
 })->name('secretary.dashboard')->middleware(['auth','role:secretary']);
 
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-})->name('admin.dashboard')->middleware(['auth','role:admin']);
+//admine
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
+    ->name('admin.dashboard')
+    ->middleware(['auth','role:admin']);
+
+Route::get('/admin/patients', function() {
+    return view('admin.patients');
+})->name('admin.patients')->middleware(['auth','role:admin']);
+
+Route::get('/admin/secrataires', function() {
+    return view('admin.secrataires');
+})->name('admin.secrataires')->middleware(['auth','role:admin']);
+
+Route::get('/admin/doctors', function() {
+    return view('admin.doctors');
+})->name('admin.doctors')->middleware(['auth','role:admin']);
 
 
 
