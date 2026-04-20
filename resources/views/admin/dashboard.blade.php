@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="fr">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="utf-8" />
@@ -236,7 +236,7 @@
                     </div>
                     <div>
                         <p class="text-sm font-medium text-on-surface-variant">Total Patients</p>
-                        <p class="text-2xl font-black text-on-surface">1,284</p>
+                        <p class="text-2xl font-black text-on-surface">{{ number_format($paidPatientsCount) }}</p>
                     </div>
                 </div>
                 <!-- Stat Card 2 -->
@@ -255,7 +255,7 @@
                     </div>
                     <div>
                         <p class="text-sm font-medium text-on-surface-variant">Consultations</p>
-                        <p class="text-2xl font-black text-on-surface">432</p>
+                        <p class="text-2xl font-black text-on-surface">{{ number_format($totalConsultations) }}</p>
                     </div>
                 </div>
                 <!-- Stat Card 3 -->
