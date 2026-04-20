@@ -43,9 +43,20 @@ Route::get('/patient/mes-rendez-vous', [PatientController::class, 'rendezVousInd
 
 
 
-Route::get('/secretary/dashboard', function () {
-    return view('secritaire.dashboard');
-})->name('secretary.dashboard')->middleware(['auth','role:secretary']);
+// Espace Secrétaire (UI routes)
+Route::group(['prefix' => 'secretary', 'middleware' => ['auth', 'role:secretary']], function () {
+    Route::get('/dashboard', function () {
+        return view('secretary.dashboard');
+    })->name('secretary.dashboard');
+
+    Route::get('/patients', function () {
+        return view('secretary.patients');
+    })->name('secretary.patients');
+
+    Route::get('/rendezvous', function () {
+        return view('secretary.rendezvous');
+    })->name('secretary.rendezvous');
+});
 
 //admine
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
