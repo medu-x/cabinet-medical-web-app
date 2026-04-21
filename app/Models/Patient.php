@@ -17,4 +17,9 @@ class Patient extends Model
     {
         return $this->hasOne(\App\Models\DossierMedical::class);
     }
+
+    public function consultations()
+    {
+        return $this->hasMany(Consultation::class);
+    }
 }

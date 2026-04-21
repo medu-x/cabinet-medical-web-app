@@ -41,8 +41,6 @@ Route::get('/patient/mes-rendez-vous', [PatientController::class, 'rendezVousInd
     ->name('patient.rendezvous.index')
     ->middleware(['auth','role:patient']);
 
-
-
 Route::get('/secretary/dashboard', function () {
     return view('secritaire.dashboard');
 })->name('secretary.dashboard')->middleware(['auth','role:secretary']);
@@ -52,9 +50,9 @@ Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
     ->name('admin.dashboard')
     ->middleware(['auth','role:admin']);
 
-Route::get('/admin/patients', function() {
-    return view('admin.patients');
-})->name('admin.patients')->middleware(['auth','role:admin']);
+Route::get('/admin/patients', [AdminController::class, 'patients'])
+    ->name('admin.patients')
+    ->middleware(['auth','role:admin']);
 
 Route::get('/admin/secrataires', function() {
     return view('admin.secrataires');
@@ -63,11 +61,6 @@ Route::get('/admin/secrataires', function() {
 Route::get('/admin/doctors', function() {
     return view('admin.doctors');
 })->name('admin.doctors')->middleware(['auth','role:admin']);
-
-
-
-
-
 
 // prend le rendez vous
 Route::post('/rendez-vous', [RendezVousController::class, 'storeRendezVous'])
@@ -82,8 +75,6 @@ Route::get('/rendez-vous/{id}/pdf', [RendezVousController::class, 'downloadPdf']
     ->name('rendezvous.pdf')
     ->middleware(['auth','role:patient']);
 
-
-
 // Password reset (6-digit code flow)
 Route::get('/forgot-password',  [PasswordResetController::class, 'showRequestForm'])->name('password.request');
 Route::post('/forgot-password', [PasswordResetController::class, 'sendCode'])->name('password.email');
@@ -92,18 +83,3 @@ Route::get('/verify-code',      [PasswordResetController::class, 'showVerifyForm
 Route::post('/verify-code',     [PasswordResetController::class, 'verifyCode'])->name('password.verify.submit');
 Route::get('/reset-password',   [PasswordResetController::class, 'showResetForm'])->name('password.reset');
 Route::post('/reset-password',  [PasswordResetController::class, 'resetPassword'])->name('password.update');
-
-
-// doctor space 
-
-Route::get('/doctor/dashboard', [MedecinController::class, 'dashboard'])
-    ->name('doctor.dashboard')
-    ->middleware(['auth','role:doctor']);
-
-Route::post('/doctor/consultation', [MedecinController::class, 'storeConsultation'])
-    ->name('doctor.consultation.store')
-    ->middleware(['auth','role:doctor']);
-
-Route::patch('/doctor/dossier/{patientId}', [MedecinController::class, 'updateDossier'])
-    ->name('doctor.dossier.update')
-    ->middleware(['auth','role:doctor']);
