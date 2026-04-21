@@ -89,7 +89,7 @@
             <div class="flex items-center flex-1 max-w-md">
                 <div class="relative w-full">
                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-                    <input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400" placeholder="Rechercher avec date, medecin..." type="text"/>
+                    <input id="rendezvous-search-input" class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400" placeholder="Rechercher par patient, médecin, date ou CIN..." type="text"/>
                 </div>
             </div>
             <div class="flex items-center gap-4">
@@ -114,6 +114,41 @@
             </button>
         </section>
 
+        @if (session('success'))
+            <div class="rounded-2xl border border-green-200 bg-green-50 px-5 py-4 text-sm font-semibold text-green-800">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
+                <p class="font-bold">Le rendez-vous n'a pas pu être enregistré.</p>
+                <ul class="mt-2 list-disc pl-5 space-y-1">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="rounded-[2rem] bg-white border border-slate-100 px-6 py-5 shadow-sm">
+                <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Total</p>
+                <p class="mt-2 text-3xl font-black text-teal-900">{{ $rendezVous->count() }}</p>
+                <p class="text-sm text-slate-500">Rendez-vous enregistrés</p>
+            </div>
+            <div class="rounded-[2rem] bg-white border border-slate-100 px-6 py-5 shadow-sm">
+                <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Aujourd'hui</p>
+                <p class="mt-2 text-3xl font-black text-teal-900">{{ $rendezVous->filter(fn ($rdv) => \Carbon\Carbon::parse($rdv->date_rendez_vous)->isToday())->count() }}</p>
+                <p class="text-sm text-slate-500">Créneaux du jour</p>
+            </div>
+            <div class="rounded-[2rem] bg-white border border-slate-100 px-6 py-5 shadow-sm">
+                <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">En attente</p>
+                <p class="mt-2 text-3xl font-black text-orange-600">{{ $rendezVous->where('statut', 'en_attente')->count() }}</p>
+                <p class="text-sm text-slate-500">À confirmer ou traiter</p>
+            </div>
+        </section>
+
         <!-- Data Table Section -->
         <section class="bg-surface-container-low rounded-[2rem] overflow-hidden">
             <div class="bg-white p-1 rounded-[2rem] shadow-sm">
@@ -124,86 +159,102 @@
                             <th class="px-6 py-4">Patient</th>
                             <th class="px-6 py-4">Médecin</th>
                             <th class="px-6 py-4">Statut</th>
-                            <th class="px-6 py-4 text-right">Actions</th>
+                            <th class="px-6 py-4 text-right">Réf.</th>
                         </tr>
                     </thead>
                     <tbody class="text-sm">
-                        <!-- Upcoming Row -->
-                        <tr class="group hover:bg-slate-50 transition-colors">
-                            <td class="px-6 py-4 bg-white first:rounded-l-2xl border-y border-l border-slate-100">
-                                <div>
-                                    <p class="font-bold text-teal-900">Demain</p>
-                                    <p class="text-[10px] text-slate-500">14:00</p>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 bg-white border-y border-slate-100">
-                                <span class="font-bold text-slate-600">Amine Larabi</span>
-                            </td>
-                            <td class="px-6 py-4 bg-white border-y border-slate-100">
-                                <span class="text-slate-500">Dr. Robert Martin</span>
-                            </td>
-                            <td class="px-6 py-4 bg-white border-y border-slate-100">
-                                <span class="bg-orange-100 text-orange-800 text-[10px] font-bold px-2 py-1 rounded uppercase">En Attente</span>
-                            </td>
-                            <td class="px-6 py-4 bg-white last:rounded-r-2xl border-y border-r border-slate-100 text-right">
-                                <button class="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors" title="Confirmer arrivée">
-                                    <span class="material-symbols-outlined text-lg">check_circle</span>
-                                </button>
-                                <button class="p-2 text-error hover:bg-error/10 rounded-lg transition-colors" title="Annuler">
-                                    <span class="material-symbols-outlined text-lg">cancel</span>
-                                </button>
-                            </td>
-                        </tr>
-                        
-                        <!-- Confirmed Row -->
-                        <tr class="group hover:bg-slate-50 transition-colors">
-                            <td class="px-6 py-4 bg-white first:rounded-l-2xl border-y border-l border-slate-100">
-                                <div>
-                                    <p class="font-bold text-teal-900">Aujourd'hui</p>
-                                    <p class="text-[10px] text-slate-500">09:15</p>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 bg-white border-y border-slate-100">
-                                <span class="font-bold text-slate-600">Jean Tremblay</span>
-                            </td>
-                            <td class="px-6 py-4 bg-white border-y border-slate-100">
-                                <span class="text-slate-500">Dr. Robert Martin</span>
-                            </td>
-                            <td class="px-6 py-4 bg-white border-y border-slate-100">
-                                <span class="bg-green-100 text-green-800 text-[10px] font-bold px-2 py-1 rounded uppercase flex items-center gap-1 w-max">
-                                    <span class="material-symbols-outlined text-[14px]">done</span> Confirmé
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 bg-white last:rounded-r-2xl border-y border-r border-slate-100 text-right">
-                                <button class="p-2 text-slate-400 hover:text-primary transition-colors">
-                                    <span class="material-symbols-outlined text-lg">visibility</span>
-                                </button>
-                            </td>
-                        </tr>
-                        
-                        <!-- Past Row -->
-                        <tr class="group hover:bg-slate-50 transition-colors opacity-70">
-                            <td class="px-6 py-4 bg-white first:rounded-l-2xl border-y border-l border-slate-100">
-                                <div>
-                                    <p class="font-bold text-slate-600">18 Mars 2024</p>
-                                    <p class="text-[10px] text-slate-500">10:30</p>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 bg-white border-y border-slate-100">
-                                <span class="font-bold text-slate-600">Sarah Figuier</span>
-                            </td>
-                            <td class="px-6 py-4 bg-white border-y border-slate-100">
-                                <span class="text-slate-500">Dr. Celine Blanc</span>
-                            </td>
-                            <td class="px-6 py-4 bg-white border-y border-slate-100">
-                                <span class="bg-slate-100 text-slate-500 text-[10px] font-bold px-2 py-1 rounded uppercase">Terminé</span>
-                            </td>
-                            <td class="px-6 py-4 bg-white last:rounded-r-2xl border-y border-r border-slate-100 text-right">
-                                <button class="p-2 text-slate-400 hover:text-primary transition-colors">
-                                    <span class="material-symbols-outlined text-lg">visibility</span>
-                                </button>
-                            </td>
-                        </tr>
+                        @forelse ($rendezVous as $rdv)
+                            @php
+                                $appointmentDate = \Carbon\Carbon::parse($rdv->date_rendez_vous);
+                                $isPast = $appointmentDate->isPast() && ! $appointmentDate->isToday();
+                                $statusClasses = match ($rdv->statut) {
+                                    'en_attente' => 'bg-orange-100 text-orange-800',
+                                    'confirmé' => 'bg-green-100 text-green-800',
+                                    'annulé', 'annule' => 'bg-red-100 text-red-700',
+                                    'termine', 'terminé' => 'bg-slate-100 text-slate-600',
+                                    default => 'bg-slate-100 text-slate-700',
+                                };
+                                $statusLabel = match ($rdv->statut) {
+                                    'en_attente' => 'En attente',
+                                    'confirmé' => 'Confirmé',
+                                    'annulé', 'annule' => 'Annulé',
+                                    'termine', 'terminé' => 'Terminé',
+                                    default => ucfirst(str_replace('_', ' ', $rdv->statut)),
+                                };
+                                $dateLabel = $appointmentDate->isToday()
+                                    ? "Aujourd'hui"
+                                    : ($appointmentDate->isTomorrow()
+                                        ? 'Demain'
+                                        : ucfirst($appointmentDate->locale('fr')->translatedFormat('d F Y')));
+                                $doctorName = $rdv->medecin->user->name ?? 'Médecin inconnu';
+                                $patientName = $rdv->patient->user->name ?? 'Patient inconnu';
+                                $specialiteName = $rdv->medecin->specialite->nom ?? 'Spécialité indisponible';
+                                $patientCin = $rdv->patient->cin ?? '';
+                                $reference = 'rdv-' . str_pad((string) $rdv->id, 4, '0', STR_PAD_LEFT);
+                                $searchBlob = \Illuminate\Support\Str::lower(implode(' ', [
+                                    $patientName,
+                                    $doctorName,
+                                    $specialiteName,
+                                    $patientCin,
+                                    $statusLabel,
+                                    $dateLabel,
+                                    $appointmentDate->locale('fr')->translatedFormat('d/m/Y'),
+                                    substr($rdv->heure_rendez_vous, 0, 5),
+                                    $reference,
+                                ]));
+                            @endphp
+                            <tr class="group hover:bg-slate-50 transition-colors rendezvous-row {{ $isPast ? 'opacity-70' : '' }}"
+                                data-search="{{ $searchBlob }}">
+                                <td class="px-6 py-4 bg-white first:rounded-l-2xl border-y border-l border-slate-100">
+                                    <div>
+                                        <p class="font-bold {{ $isPast ? 'text-slate-600' : 'text-teal-900' }}">{{ $dateLabel }}</p>
+                                        <p class="text-[10px] text-slate-500">
+                                            {{ \Carbon\Carbon::parse($rdv->date_rendez_vous)->locale('fr')->translatedFormat('d/m/Y') }}
+                                            •
+                                            {{ substr($rdv->heure_rendez_vous, 0, 5) }}
+                                        </p>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 bg-white border-y border-slate-100">
+                                    <div>
+                                        <p class="font-bold text-slate-700">{{ $patientName }}</p>
+                                        <p class="text-[10px] text-slate-500">{{ $rdv->patient->cin ?? 'CIN indisponible' }}</p>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 bg-white border-y border-slate-100">
+                                    <div>
+                                        <p class="text-slate-700 font-semibold">Dr. {{ $doctorName }}</p>
+                                        <p class="text-[10px] text-slate-500">{{ $specialiteName }}</p>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 bg-white border-y border-slate-100">
+                                    <span class="{{ $statusClasses }} text-[10px] font-bold px-2 py-1 rounded uppercase inline-flex items-center gap-1">
+                                        @if ($rdv->statut === 'confirmé')
+                                            <span class="material-symbols-outlined text-[14px]">done</span>
+                                        @endif
+                                        {{ $statusLabel }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 bg-white last:rounded-r-2xl border-y border-r border-slate-100 text-right">
+                                    <span class="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1 text-[11px] font-bold text-slate-500">
+                                        #{{ strtoupper($reference) }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr id="rendezvous-empty-row">
+                                <td colspan="5" class="px-6 py-12 text-center text-slate-500">
+                                    Aucun rendez-vous n'est encore enregistré.
+                                </td>
+                            </tr>
+                        @endforelse
+                        @if ($rendezVous->isNotEmpty())
+                            <tr id="rendezvous-empty-row" class="hidden">
+                                <td colspan="5" class="px-6 py-12 text-center text-slate-500">
+                                    Aucun rendez-vous ne correspond à cette recherche.
+                                </td>
+                            </tr>
+                        @endif
                     </tbody>
                 </table>
             </div>
@@ -224,42 +275,70 @@
             </button>
         </div>
         
-        <form class="p-8 space-y-6 overflow-y-auto">
+        <form action="{{ route('secretary.rendezvous.store') }}" method="POST" class="p-8 space-y-6 overflow-y-auto">
+            @csrf
             <div class="grid grid-cols-2 gap-6">
-                
                 <div class="col-span-2">
                     <label class="block text-[11px] font-bold text-slate-500 mb-2">Sélectionner Patient</label>
-                    <select class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20">
-                        <option>Amine Larabi - AB123456</option>
-                        <option>Jean Tremblay - AA112233</option>
+                    <select name="patient_id" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20">
+                        <option value="">Choisir un patient</option>
+                        @foreach ($patients as $patient)
+                            <option value="{{ $patient->id }}" @selected(old('patient_id') == $patient->id)>
+                                {{ $patient->user->name ?? 'Patient inconnu' }} - {{ $patient->cin }}
+                            </option>
+                        @endforeach
                     </select>
+                    @error('patient_id')
+                        <p class="mt-2 text-xs font-medium text-red-600">{{ $message }}</p>
+                    @enderror
+                    @if ($patients->isEmpty())
+                        <p class="mt-2 text-xs font-medium text-orange-600">Aucun patient disponible pour l'instant.</p>
+                    @endif
                 </div>
-                
+
                 <div class="col-span-2">
                     <label class="block text-[11px] font-bold text-slate-500 mb-2">Médecin Consultant</label>
-                    <select class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20">
-                        <option>Dr. Robert Martin (Cardiologue)</option>
-                        <option>Dr. Celine Blanc (Généraliste)</option>
+                    <select name="medecin_id" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20">
+                        <option value="">Choisir un médecin</option>
+                        @foreach ($medecins as $medecin)
+                            <option value="{{ $medecin->id }}" @selected(old('medecin_id') == $medecin->id)>
+                                Dr. {{ $medecin->user->name ?? 'Médecin inconnu' }}
+                                @if ($medecin->specialite)
+                                    ({{ $medecin->specialite->nom }})
+                                @endif
+                            </option>
+                        @endforeach
                     </select>
+                    @error('medecin_id')
+                        <p class="mt-2 text-xs font-medium text-red-600">{{ $message }}</p>
+                    @enderror
+                    @if ($medecins->isEmpty())
+                        <p class="mt-2 text-xs font-medium text-orange-600">Aucun médecin disponible pour l'instant.</p>
+                    @endif
                 </div>
-                
+
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 mb-2">Date du rendez-vous</label>
-                    <input type="date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20">
+                    <input type="date" name="date_rendez_vous" min="{{ now()->toDateString() }}" value="{{ old('date_rendez_vous', now()->toDateString()) }}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20">
+                    @error('date_rendez_vous')
+                        <p class="mt-2 text-xs font-medium text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 mb-2">Heure</label>
-                    <input type="time" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20">
+                    <input type="time" name="heure_rendez_vous" value="{{ old('heure_rendez_vous') }}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20">
+                    @error('heure_rendez_vous')
+                        <p class="mt-2 text-xs font-medium text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
-                
+
                 <!-- Business Logic: Statut Choice -->
                 <div class="col-span-2 mt-2">
                     <label class="block text-sm font-bold text-teal-900 mb-3 border-b border-slate-100 pb-2">Situation du Patient</label>
                     <div class="grid grid-cols-2 gap-4">
-                        
                         <!-- Option 1: En_Attente -->
                         <label class="cursor-pointer relative">
-                            <input type="radio" name="statut" value="en_attente" class="peer sr-only" checked>
+                            <input type="radio" name="statut" value="en_attente" class="peer sr-only" {{ old('statut', 'en_attente') === 'en_attente' ? 'checked' : '' }}>
                             <div class="p-4 rounded-xl border-2 border-slate-200 peer-checked:border-primary peer-checked:bg-teal-50 transition-all">
                                 <div class="flex items-center gap-2 mb-1">
                                     <span class="material-symbols-outlined text-orange-500">pending_actions</span>
@@ -271,7 +350,7 @@
                         
                         <!-- Option 2: Confirme -->
                         <label class="cursor-pointer relative">
-                            <input type="radio" name="statut" value="confirme" class="peer sr-only">
+                            <input type="radio" name="statut" value="confirmé" class="peer sr-only" {{ old('statut') === 'confirmé' ? 'checked' : '' }}>
                             <div class="p-4 rounded-xl border-2 border-slate-200 peer-checked:border-primary peer-checked:bg-teal-50 transition-all">
                                 <div class="flex items-center gap-2 mb-1">
                                     <span class="material-symbols-outlined text-green-500">how_to_reg</span>
@@ -280,23 +359,68 @@
                                 <p class="text-xs text-slate-500">Statut: <strong class="text-green-600">Confirmé</strong><br/>Le patient vient d'arriver au cabinet sans RDV préalable et est ajouté à la file direct.</p>
                             </div>
                         </label>
-                        
                     </div>
+                    @error('statut')
+                        <p class="mt-2 text-xs font-medium text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
 
             </div>
-            
+
             <div class="pt-6 flex justify-end gap-3 border-t border-slate-100">
                 <button type="button" onclick="document.getElementById('modal-add-rdv').classList.add('hidden')" class="px-6 py-2.5 rounded-xl font-bold text-sm text-slate-500 hover:bg-slate-100">
                     Annuler
                 </button>
-                <button type="button" class="cta-gradient text-white px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg hover:shadow-xl transition-all">
+                <button type="submit" @disabled($patients->isEmpty() || $medecins->isEmpty()) class="cta-gradient text-white px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                     Planifier
                 </button>
             </div>
         </form>
     </div>
 </div>
+
+@if ($errors->any())
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('modal-add-rdv').classList.remove('hidden');
+        });
+    </script>
+@endif
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('rendezvous-search-input');
+        const rendezvousRows = Array.from(document.querySelectorAll('.rendezvous-row'));
+        const emptyRow = document.getElementById('rendezvous-empty-row');
+
+        if (!searchInput) {
+            return;
+        }
+
+        const filterRows = function () {
+            const query = searchInput.value.trim().toLowerCase();
+            let visibleCount = 0;
+
+            rendezvousRows.forEach(function (row) {
+                const haystack = row.dataset.search || '';
+                const matches = query === '' || haystack.includes(query);
+
+                row.classList.toggle('hidden', !matches);
+
+                if (matches) {
+                    visibleCount += 1;
+                }
+            });
+
+            if (emptyRow) {
+                emptyRow.classList.toggle('hidden', visibleCount !== 0);
+            }
+        };
+
+        searchInput.addEventListener('input', filterRows);
+        filterRows();
+    });
+</script>
 
 </body>
 </html>

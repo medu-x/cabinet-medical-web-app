@@ -18,10 +18,10 @@ class SecretarySeeder extends Seeder
     public function run()
     {
         // On crée l'utilisateur Secrétaire
-        $user = User::firstOrCreate(
+        $user = User::updateOrCreate(
             ['email' => 'secretary@cabinet.com'],
             [
-                'name' => 'Sophie La Secrétaire',
+                'name' => 'yahya sihame',
                 'password' => Hash::make('password'),
                 'role' => 'secretary',
                 'remember_token' => Str::random(10),

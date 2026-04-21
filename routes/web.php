@@ -7,6 +7,7 @@ use App\Http\Controllers\PatientController;
 use App\Http\Controllers\RendezVousController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\MedecinController;
+use App\Http\Controllers\SecretaryController;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 
@@ -45,17 +46,23 @@ Route::get('/patient/mes-rendez-vous', [PatientController::class, 'rendezVousInd
 
 // Espace Secrétaire (UI routes)
 Route::group(['prefix' => 'secretary', 'middleware' => ['auth', 'role:secretary']], function () {
-    Route::get('/dashboard', function () {
-        return view('secretary.dashboard');
-    })->name('secretary.dashboard');
+    Route::get('/dashboard', [SecretaryController::class, 'dashboard'])
+        ->name('secretary.dashboard');
 
-    Route::get('/patients', function () {
-        return view('secretary.patients');
-    })->name('secretary.patients');
+    Route::get('/patients', [SecretaryController::class, 'patients'])
+        ->name('secretary.patients');
 
-    Route::get('/rendezvous', function () {
-        return view('secretary.rendezvous');
-    })->name('secretary.rendezvous');
+    Route::post('/patients', [SecretaryController::class, 'storePatient'])
+        ->name('secretary.patients.store');
+
+    Route::get('/rendezvous', [RendezVousController::class, 'secretaryIndex'])
+        ->name('secretary.rendezvous');
+
+    Route::post('/rendezvous', [RendezVousController::class, 'secretaryStore'])
+        ->name('secretary.rendezvous.store');
+
+    Route::patch('/rendezvous/{rendezVous}/status', [SecretaryController::class, 'updateRendezVousStatus'])
+        ->name('secretary.rendezvous.status');
 });
 
 //admine
