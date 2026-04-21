@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             TodayRendezVousSeeder::class,
             AvisTableSeeder::class,
             AdminUserSeeder::class,
+            SecretarySeeder::class,
         ]);
     }
 }

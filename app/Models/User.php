@@ -39,6 +39,11 @@ class User extends Authenticatable
         return $this->hasOne(Medecin::class);
     }
 
+    public function secretaire()
+    {
+        return $this->hasOne(Secretaire::class);
+    }
+
     public function getPhotoUrlAttribute()
     {
         return $this->photo_path
