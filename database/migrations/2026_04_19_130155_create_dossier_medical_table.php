@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('patients', function (Blueprint $table) {
+        Schema::create('dossier_medical', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('cin')->unique()->nullable();
-            $table->date('date_naissance')->nullable();
-            $table->string('telephone')->nullable();
-            $table->text('adresse')->nullable();
+            $table->foreignId('patient_id')->unique()->constrained('patients')->onDelete('cascade');
+            $table->string('groupe_sanguin')->nullable();
+            $table->text('allergies')->nullable();
+            $table->text('antecedents')->nullable();
+
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('patients');
+        Schema::dropIfExists('dossier_medical');
     }
 };

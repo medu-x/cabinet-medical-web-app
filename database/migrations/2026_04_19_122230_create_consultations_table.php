@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rendez_vous', function (Blueprint $table) {
+        Schema::create('consultations', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('rendez_vous_id')->unique()->constrained('rendez_vous')->onDelete('cascade');
             $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->foreignId('medecin_id')->constrained('medecins')->onDelete('cascade');
-            $table->date('date_rendez_vous');
-            $table->time('heure_rendez_vous');
-            $table->string('statut')->default('en_attente');
+            $table->string('motif')->nullable();
+            $table->string('diagnostic')->nullable();
+            $table->text('rapport_medical')->nullable();
+            $table->string('statut')->default('en_attente'); // en_attente / terminee
+            
             $table->timestamps();
         });
     }
@@ -27,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rendez_vous');
+        Schema::dropIfExists('consultations');
     }
 };

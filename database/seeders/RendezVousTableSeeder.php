@@ -1,11 +1,13 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-return new class extends Migration
+class RendezVousTableSeeder extends Seeder
 {
-    public function up(): void
+    public function run(): void
     {
         DB::table('rendez_vous')->insert([
             [
@@ -14,7 +16,6 @@ return new class extends Migration
                 'date_rendez_vous' => '2026-04-08',
                 'heure_rendez_vous' => '10:00:00',
                 'statut' => 'termine',
-                'notes' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -24,18 +25,9 @@ return new class extends Migration
                 'date_rendez_vous' => '2026-04-09',
                 'heure_rendez_vous' => '14:30:00',
                 'statut' => 'termine',
-                'notes' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
         ]);
     }
-
-    public function down(): void
-    {
-        DB::table('rendez_vous')
-            ->whereIn('date_rendez_vous', ['2026-04-08', '2026-04-09'])
-            ->whereIn('heure_rendez_vous', ['10:00:00', '14:30:00'])
-            ->delete();
-    }
-};
+}

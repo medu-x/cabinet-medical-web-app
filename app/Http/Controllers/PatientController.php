@@ -57,13 +57,20 @@ class PatientController extends Controller
                 ->pluck('heure_rendez_vous')
                 ->map(fn($time) => substr($time, 0, 5))
                 ->toArray();
-            $slots = collect($allSlots)->map(function ($slot) use ($bookedSlots) {
+            
+            $isToday = $selectedDate === now()->toDateString();
+            
+            $slots = collect($allSlots)->map(function ($slot) use ($bookedSlots,$isToday) {
+                $isBooked = in_array($slot, $bookedSlots);
+                $hasPassed = $isToday && $slot <= now()->addMinutes(60)->format('H:i');
                 return [
                     'time' => $slot,
-                    'available' => !in_array($slot, $bookedSlots),
+                    'available' => !$isBooked && !$hasPassed,
                 ];
             });
         }
+
+        
 
         // form handling final request post !
         $selectedSpecialite = null;
@@ -92,5 +99,33 @@ class PatientController extends Controller
             'selectedSpecialite',
             'selectedMedecin'
         ));
+    }
+
+    public function rendezVousIndex()
+    {
+        $user = Auth::user();
+        if ($user->role !== 'patient' || !$user->patient) {
+            abort(403, 'Non autorisé.');
+        }
+
+        // Fetch all appointments for the patient, ordered by date and time
+        $allRendezVous = \App\Models\RendezVous::with(['medecin.user', 'medecin.specialite'])
+            ->where('patient_id', $user->patient->id)
+            ->orderBy('date_rendez_vous', 'desc')
+            ->orderBy('heure_rendez_vous', 'desc')
+            ->get();
+
+        // Split into "Upcoming" vs "Past"
+        $today = now()->toDateString();
+        
+        $upcoming = $allRendezVous->filter(function ($rdv) use ($today) {
+            return $rdv->date_rendez_vous >= $today && $rdv->statut !== 'annulé';
+        })->sortBy('date_rendez_vous')->sortBy('heure_rendez_vous');
+
+        $past = $allRendezVous->filter(function ($rdv) use ($today) {
+            return $rdv->date_rendez_vous < $today || $rdv->statut === 'annulé';
+        });
+
+        return view('patient.rendezvous', compact('user', 'upcoming', 'past'));
     }
 }

@@ -61,4 +61,26 @@ class Medecin extends Model
             ? asset('storage/' . $this->photo_path)
             : ($this->user?->photo_url ?? asset('images/default-doctor.png'));
     }
+
+    // rendez vous medcin de jour
+    public function rendezVousDuJourConfirmed()
+    {
+        return $this->rendezVous()
+            ->with(['patient.user'])    
+            ->whereDate('date_rendez_vous', today())
+            ->where('statut', 'confirmé')
+            ->orderBy('heure_rendez_vous', 'asc')
+            ->get();
+    }
+    public function rendezVousDuJourConfirmedCount()
+    {
+        return $this->rendezVous()
+            ->whereDate('date_rendez_vous', today())
+            ->where('statut', 'confirmé')
+            ->count();
+    }
+    
+    
+
+    
 }

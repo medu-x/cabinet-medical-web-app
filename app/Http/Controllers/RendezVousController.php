@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\RendezVous;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Mail\ConfirmationRendezVousMail;
 
 class RendezVousController extends Controller
 {
@@ -26,7 +28,15 @@ class RendezVousController extends Controller
             return back()->with('error', 'Ce creneau est deja reserve.');
         }
 
+        // Server-side guard: reject slots in the past or within the next 60 minutes
+        $slotDateTime = \Carbon\Carbon::parse($request->date_rendez_vous . ' ' . $request->heure_rendez_vous);
+
+        if (now()->diffInMinutes($slotDateTime, false) < 60) {
+            return back()->with('error', 'Impossible de réserver un créneau dans moins de 60 minutes ou dans le passé.');
+        }
+
         $user = Auth::user();
+        
 
         if (! $user->patient) {
             return back()->with('error', 'Aucun profil patient trouve pour cet utilisateur.');
