@@ -32,14 +32,14 @@ class RendezVousController extends Controller
             return back()->with('error', 'Aucun profil patient trouve pour cet utilisateur.');
         }
 
-        $rendezVous = RendezVous::create([
-            'patient_id' => $user->patient->id,
-            'medecin_id' => $request->medecin_id,
-            'date_rendez_vous' => $request->date_rendez_vous,
-            'heure_rendez_vous' => $request->heure_rendez_vous,
-            'statut' => 'en_attente',
-            'notes' => null,
-        ]);
+        $rendezVous = RendezVous::with(['medecin.user', 'medecin.specialite', 'patient.user'])
+            ->create([
+                'patient_id' => $user->patient->id,
+                'medecin_id' => $request->medecin_id,
+                'date_rendez_vous' => $request->date_rendez_vous,
+                'heure_rendez_vous' => $request->heure_rendez_vous,
+                'statut' => 'en_attente',
+            ]);
 
         return redirect()
             ->route('rendezvous.confirmation', $rendezVous->id)
