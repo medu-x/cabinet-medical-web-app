@@ -49,7 +49,6 @@ class RendezVousController extends Controller
                 'date_rendez_vous' => $request->date_rendez_vous,
                 'heure_rendez_vous' => $request->heure_rendez_vous,
                 'statut' => 'en_attente',
-                'notes' => null,
             ]);
 
         // Send confirmation email to the patient 
