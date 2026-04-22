@@ -10,17 +10,85 @@ use App\Models\Specialite;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
     // ─── DASHBOARD ────────────────────────────────────────────────────────────
 
-    public function dashboard()
+    public function dashboard(Request $request)
     {
-        $paidPatientsCount  = Patient::count();
-        $totalConsultations = RendezVous::count();
+        $availableYears = collect([2026, 2025]);
 
-        return view('admin.dashboard', compact('paidPatientsCount', 'totalConsultations'));
+        $selectedYear = (int) $request->query('year', $availableYears->first());
+
+        if (! $availableYears->contains($selectedYear)) {
+            $selectedYear = $availableYears->first();
+        }
+
+        $paidPatientsCount = Patient::count();
+        $totalConsultations = RendezVous::count();
+        $totalRendezVous = RendezVous::count();
+        $totalRendezVousAnnules = RendezVous::whereIn('statut', ['annulé', 'annule', 'annulÃ©'])->count();
+        $newPatientsThisMonth = Patient::whereYear('created_at', now()->year)
+            ->whereMonth('created_at', now()->month)
+            ->count();
+
+        $rendezVousThisMonth = RendezVous::whereYear('date_rendez_vous', now()->year)
+            ->whereMonth('date_rendez_vous', now()->month)
+            ->count();
+
+        $monthlyRendezVous = RendezVous::selectRaw('MONTH(date_rendez_vous) as month_number, COUNT(*) as total')
+            ->whereYear('date_rendez_vous', $selectedYear)
+            ->groupBy(DB::raw('MONTH(date_rendez_vous)'))
+            ->pluck('total', 'month_number');
+
+        $chartLabels = ['JAN', 'FEV', 'MAR', 'AVR', 'MAI', 'JUN', 'JUL', 'AOU', 'SEP', 'OCT', 'NOV', 'DEC'];
+        $chartData = [];
+
+        foreach (range(1, 12) as $monthNumber) {
+            $chartData[] = (int) ($monthlyRendezVous[$monthNumber] ?? 0);
+        }
+
+        $demographyCounts = [
+            '18_35' => 0,
+            '36_60' => 0,
+            '60_plus' => 0,
+        ];
+
+        $patientsWithBirthDate = Patient::whereNotNull('date_naissance')->pluck('date_naissance');
+
+        foreach ($patientsWithBirthDate as $dateNaissance) {
+            $age = \Carbon\Carbon::parse($dateNaissance)->age;
+
+            if ($age >= 18 && $age <= 35) {
+                $demographyCounts['18_35']++;
+            } elseif ($age >= 36 && $age <= 60) {
+                $demographyCounts['36_60']++;
+            } elseif ($age > 60) {
+                $demographyCounts['60_plus']++;
+            }
+        }
+
+        $demographyData = [
+            $demographyCounts['18_35'],
+            $demographyCounts['36_60'],
+            $demographyCounts['60_plus'],
+        ];
+
+        return view('admin.dashboard', compact(
+            'paidPatientsCount',
+            'totalConsultations',
+            'totalRendezVous',
+            'totalRendezVousAnnules',
+            'newPatientsThisMonth',
+            'rendezVousThisMonth',
+            'availableYears',
+            'selectedYear',
+            'chartLabels',
+            'chartData',
+            'demographyData'
+        ));
     }
 
     // ─── PATIENTS ─────────────────────────────────────────────────────────────
