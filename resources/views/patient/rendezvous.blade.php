@@ -88,6 +88,7 @@
                     <a class="text-slate-500 hover:text-primary transition-colors font-medium" href="/">Accueil</a>
                     <a class="text-slate-500 hover:text-primary transition-colors font-medium" href="{{ route('patient.dashboard') }}">Prendre un RDV</a>
                     <a class="text-primary font-semibold border-b-2 border-primary pb-0.5" href="{{ route('patient.rendezvous.index') }}">Mes rendez-vous</a>
+                    <a class="text-slate-500 hover:text-primary transition-colors font-medium" href="{{ route('patient.profil') }}">Profil électronique</a>
                 </div>
             </div>
             <div class="flex items-center gap-4">

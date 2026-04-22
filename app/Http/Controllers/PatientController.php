@@ -101,6 +101,28 @@ class PatientController extends Controller
         ));
     }
 
+    public function profil()
+    {
+        $user    = Auth::user();
+        $patient = $user->patient;
+
+        if (!$patient) abort(403, 'Non autorisé.');
+
+        $patient->load('dossierMedical');
+
+        $rendezVous = \App\Models\RendezVous::with(['medecin.user', 'medecin.specialite'])
+            ->where('patient_id', $patient->id)
+            ->orderBy('date_rendez_vous', 'desc')
+            ->get();
+
+        $consultations = \App\Models\Consultation::with(['ordonnances', 'medecin.user', 'medecin.specialite'])
+            ->where('patient_id', $patient->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('patient.profil', compact('user', 'patient', 'rendezVous', 'consultations'));
+    }
+
     public function rendezVousIndex()
     {
         $user = Auth::user();

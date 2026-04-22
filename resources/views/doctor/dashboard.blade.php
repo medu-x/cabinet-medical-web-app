@@ -126,13 +126,10 @@
                     </div>
                 </div>
                 {{-- logout --}}
-                <form action="/logout" method="POST">
-                    @csrf
-                    <button type="submit" class="flex items-center gap-1 text-xs text-outline hover:text-red-500 transition-colors px-2 py-1 rounded-lg hover:bg-red-50">
-                        <span class="material-symbols-outlined text-[16px]">logout</span>
-                        Deconnexion
-                    </button>
-                </form>
+                <a href="{{ route('logout') }}" class="flex items-center gap-1 text-xs text-outline hover:text-red-500 transition-colors px-2 py-1 rounded-lg hover:bg-red-50">
+                    <span class="material-symbols-outlined text-[16px]">logout</span>
+                    Déconnexion
+                </a>
             </div>
         </header>
         <!-- Content Grid -->

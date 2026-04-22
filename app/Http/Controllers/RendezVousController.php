@@ -124,10 +124,6 @@ class RendezVousController extends Controller
                 'statut' => 'en_attente',
             ]);
 
-        // Send confirmation email to the patient 
-        
-        Mail::to($user->email)->send(new ConfirmationRendezVousMail($rendezVous));
-
         return redirect()
             ->route('rendezvous.confirmation', $rendezVous->id)
             ->with('success', 'Rendez-vous reserve avec succes.');

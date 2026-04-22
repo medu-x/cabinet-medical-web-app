@@ -42,6 +42,10 @@ Route::get('/patient/mes-rendez-vous', [PatientController::class, 'rendezVousInd
     ->name('patient.rendezvous.index')
     ->middleware(['auth','role:patient']);
 
+Route::get('/patient/profil', [PatientController::class, 'profil'])
+    ->name('patient.profil')
+    ->middleware(['auth','role:patient']);
+
 
 
 // Espace Secrétaire (UI routes)
@@ -65,22 +69,32 @@ Route::group(['prefix' => 'secretary', 'middleware' => ['auth', 'role:secretary'
         ->name('secretary.rendezvous.status');
 });
 
-//admine
-Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
-    ->name('admin.dashboard')
-    ->middleware(['auth','role:admin']);
+// Admin
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
-Route::get('/admin/patients', function() {
-    return view('admin.patients');
-})->name('admin.patients')->middleware(['auth','role:admin']);
+    Route::get('/dashboard',   [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
-Route::get('/admin/secrataires', function() {
-    return view('admin.secrataires');
-})->name('admin.secrataires')->middleware(['auth','role:admin']);
+    // Patients
+    Route::get('/patients',               [AdminController::class, 'patients'])->name('admin.patients');
+    Route::post('/patients',              [AdminController::class, 'storePatient'])->name('admin.patients.store');
+    Route::patch('/patients/{id}',        [AdminController::class, 'updatePatient'])->name('admin.patients.update');
+    Route::delete('/patients/{id}',       [AdminController::class, 'destroyPatient'])->name('admin.patients.destroy');
 
-Route::get('/admin/doctors', function() {
-    return view('admin.doctors');
-})->name('admin.doctors')->middleware(['auth','role:admin']);
+    // Secrétaires
+    Route::get('/secrataires',            [AdminController::class, 'secretaires'])->name('admin.secrataires');
+    Route::post('/secrataires',           [AdminController::class, 'storeSecretaire'])->name('admin.secrataires.store');
+    Route::patch('/secrataires/{id}',     [AdminController::class, 'updateSecretaire'])->name('admin.secrataires.update');
+    Route::delete('/secrataires/{id}',    [AdminController::class, 'destroySecretaire'])->name('admin.secrataires.destroy');
+
+    // Médecins
+    Route::get('/doctors',                [AdminController::class, 'doctors'])->name('admin.doctors');
+    Route::post('/doctors',               [AdminController::class, 'storeDoctor'])->name('admin.doctors.store');
+    Route::patch('/doctors/{id}',         [AdminController::class, 'updateDoctor'])->name('admin.doctors.update');
+    Route::delete('/doctors/{id}',        [AdminController::class, 'destroyDoctor'])->name('admin.doctors.destroy');
+
+    // Patient detail
+    Route::get('/patients/{id}/detail',   [AdminController::class, 'patientDetail'])->name('admin.patients.detail');
+});
 
 
 

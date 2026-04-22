@@ -10,12 +10,7 @@ use Illuminate\Support\Str;
 
 class SecretarySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
         // On crée l'utilisateur Secrétaire
         $user = User::updateOrCreate(
@@ -32,10 +27,32 @@ class SecretarySeeder extends Seeder
         Secretaire::firstOrCreate(
             ['user_id' => $user->id],
             [
-                'cin' => 'SEC12345',
-                'bureau' => 'Accueil Principal',
-                'adresse' => 'Bureau A, RdC Cabinet Vitality',
-            ]
-        );
+                'name'   => 'Nadia Tahiri',
+                'email'  => 'n.tahiri@cabinet.com',
+                'cin'    => 'SEC11223',
+                'bureau' => 'C',
+            ],
+        ];
+
+        foreach ($secretaires as $data) {
+            $user = User::firstOrCreate(
+                ['email' => $data['email']],
+                [
+                    'name'           => $data['name'],
+                    'password'       => Hash::make('password'),
+                    'role'           => 'secretary',
+                    'remember_token' => Str::random(10),
+                ]
+            );
+
+            Secretaire::firstOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'cin'    => $data['cin'],
+                    'bureau' => $data['bureau'],
+                ]
+            );
+        }
     }
 }
+

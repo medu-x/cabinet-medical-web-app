@@ -21,12 +21,13 @@ class DoctorUsersSeeder extends Seeder
         ]);
 
         DB::table('medecins')->insert([
-            'user_id'      => $user1,
-            'specialite_id' => 1, // Ajuste selon ta table specialites
-            'experience'   => 8,
-            'bio'          => 'Médecin spécialiste avec 8 ans d\'expérience.',
-            'created_at'   => now(),
-            'updated_at'   => now(),
+            'user_id'       => $user1,
+            'cin'           => 'MED10001',
+            'specialite_id' => 1,
+            'experience'    => 8,
+            'bio'           => 'Médecin spécialiste avec 8 ans d\'expérience.',
+            'created_at'    => now(),
+            'updated_at'    => now(),
         ]);
 
         // Doctor 2
@@ -40,12 +41,13 @@ class DoctorUsersSeeder extends Seeder
         ]);
 
         DB::table('medecins')->insert([
-            'user_id'      => $user2,
-            'specialite_id' => 2, // Ajuste selon ta table specialites
-            'experience'   => 5,
-            'bio'          => 'Médecin généraliste avec 5 ans d\'expérience.',
-            'created_at'   => now(),
-            'updated_at'   => now(),
+            'user_id'       => $user2,
+            'cin'           => 'MED10002',
+            'specialite_id' => 2,
+            'experience'    => 5,
+            'bio'           => 'Médecin généraliste avec 5 ans d\'expérience.',
+            'created_at'    => now(),
+            'updated_at'    => now(),
         ]);
     }
 }
