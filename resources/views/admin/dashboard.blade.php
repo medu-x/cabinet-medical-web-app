@@ -115,9 +115,14 @@
     <!-- SideNavBar Integration -->
     <aside
         class="h-screen w-64 fixed left-0 top-0 bg-slate-50 dark:bg-slate-950 flex flex-col p-4 space-y-2 z-40 hidden md:flex">
-        <div class="px-4 py-6 mb-4">
-            <h2 class="text-lg font-black text-teal-800 dark:text-teal-300">Sanctuary Health</h2>
-            <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold">Clinical Excellence</p>
+        <div class="px-4 py-6 mb-4 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
+                <span class="material-symbols-outlined text-2xl">medical_services</span>
+            </div>
+            <div>
+                <h2 class="text-lg font-black text-teal-900 tracking-tight">Cabinet Médical</h2>
+                <p class="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">Administration</p>
+            </div>
         </div>
         <nav class="flex-1 space-y-1">
             <a class="flex items-center gap-3 px-4 py-3 bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 rounded-xl transition-all duration-200"
@@ -141,21 +146,11 @@
                 <span class="text-sm font-medium">Médecins</span>
             </a>
         </nav>
-        <div class="mt-auto pt-6 border-t border-slate-200 space-y-1">
-            <button
-                class="w-full bg-gradient-to-br from-primary to-primary-container text-white rounded-xl py-3 px-4 text-sm font-bold flex items-center justify-center gap-2 custom-shadow mb-4">
-                <span class="material-symbols-outlined text-sm">add</span>
-                New Consultation
-            </button>
-            <a class="flex items-center gap-3 px-4 py-2 text-slate-600 hover:text-teal-700 text-xs font-medium"
-                href="#">
-                <span class="material-symbols-outlined text-lg">help_outline</span>
-                Support
-            </a>
-            <a class="flex items-center gap-3 px-4 py-2 text-slate-600 hover:text-error text-xs font-medium"
-                href="{{route('logout')}}">
-                <span class="material-symbols-outlined text-lg">logout</span>
-                Sign Out
+        <div class="mt-auto pt-6 border-t border-slate-200">
+            <a href="{{ route('logout') }}"
+               class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-error hover:bg-red-50 rounded-xl transition-all duration-200">
+                <span class="material-symbols-outlined">logout</span>
+                Déconnexion
             </a>
         </div>
     </aside>
@@ -163,33 +158,14 @@
     <main class="md:ml-64 min-h-screen flex flex-col">
         <!-- TopAppBar Integration -->
         <header
-            class="bg-white/80 backdrop-blur-md sticky top-0 z-30 shadow-sm px-6 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <div
-                    class="hidden lg:flex items-center bg-surface-container-low px-4 py-1.5 rounded-full border border-outline-variant/10">
-                    <span class="material-symbols-outlined text-slate-400 mr-2 text-lg">search</span>
-                    <input class="bg-transparent border-none focus:ring-0 text-sm w-64 p-0"
-                        placeholder="Rechercher un dossier..." type="text" />
-                </div>
-            </div>
+            class="bg-white/80 backdrop-blur-md sticky top-0 z-30 shadow-sm px-6 py-3 flex justify-end items-center">
             <div class="flex items-center gap-3">
-                <button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors relative">
-                    <span class="material-symbols-outlined">notifications</span>
-                    <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
-                </button>
-                <button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
-                    <span class="material-symbols-outlined">settings</span>
-                </button>
-                <div class="h-8 w-px bg-slate-200 mx-1"></div>
-                <div class="flex items-center gap-3 pl-2">
-                    <div class="text-right hidden sm:block">
-                        <p class="text-xs font-bold text-on-surface">Dr. Smith</p>
-                        <p class="text-[10px] text-slate-500">Administrateur</p>
-                    </div>
-                    <img alt="Dr. Smith's Profile" class="w-10 h-10 rounded-full object-cover ring-2 ring-teal-50"
-                        data-alt="close-up portrait of a professional male doctor with short dark hair in white lab coat smiling warmly"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCM_tvBJXfOctEo7N0Ppthjh9-mX9FWP9mp-SKLctImsoahrx2mesFnHgJxyiUs-IyuOFp25yE0GslTDAC74uPXfWio3bfuBUo_3eAyKR15tx-q7q_modonWXNOHoCTHARgV4fVRXzyUUnxiHuVjE6Egq__Hu4vde_fretOOEFTwVPeRdo6RCcJjiKQ73tpsVd2eZTHoqr-lT1sNfuhx6HZXqc3Gkyn3REfAA_ZpvYaoZ24QzpTI_7WAJAaOVMVK9tbJYWw1skVEVg" />
+                <div class="text-right hidden sm:block">
+                    <p class="text-xs font-bold text-on-surface">{{ auth()->user()->name }}</p>
+                    <p class="text-[10px] text-slate-500">Administrateur</p>
                 </div>
+                <img alt="{{ auth()->user()->name }}" class="w-10 h-10 rounded-full object-cover ring-2 ring-teal-50"
+                    src="{{ auth()->user()->photo_url }}" />
             </div>
         </header>
         <!-- Dashboard Content -->
@@ -201,7 +177,7 @@
                     <p class="text-on-surface-variant mt-1">Données analytiques pour la période du 1er au 28 Octobre
                         2024</p>
                 </div>
-                
+
             </div>
             <!-- Bento Grid - KPIs -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -332,17 +308,13 @@
                 </div>
             </div>
         </section>
-        <!-- Footer Integration -->
-        <footer
-            class="w-full py-6 mt-auto bg-white flex flex-col md:flex-row justify-between items-center px-8 border-t border-slate-200">
-            <p class="text-xs font-inter text-slate-500">© 2024 Clinical Sanctuary. Tous droits réservés.</p>
-            <div class="flex gap-6 mt-4 md:mt-0">
-                <a class="text-xs text-slate-400 hover:text-teal-500 transition-colors" href="#">Politique de
-                    Confidentialité</a>
-                <a class="text-xs text-slate-400 hover:text-teal-500 transition-colors" href="#">Conditions
-                    d'Utilisation</a>
-                <a class="text-xs text-slate-400 hover:text-teal-500 transition-colors" href="#">Conformité
-                    HIPAA</a>
+        <!-- Footer -->
+        <footer class="w-full py-6 mt-auto bg-white border-t border-slate-200 flex flex-col md:flex-row justify-between items-center px-8">
+            <div class="text-xs text-slate-500 mb-4 md:mb-0">© 2024 Cabinet Médical. Tous droits réservés.</div>
+            <div class="flex gap-6">
+                <a class="text-xs text-slate-500 hover:text-teal-500 transition-colors" href="#">Politique de confidentialité</a>
+                <a class="text-xs text-slate-500 hover:text-teal-500 transition-colors" href="#">Conditions d'utilisation</a>
+                <a class="text-xs text-slate-500 hover:text-teal-500 transition-colors" href="#">Conformité HIPAA</a>
             </div>
         </footer>
     </main>

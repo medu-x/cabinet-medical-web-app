@@ -40,12 +40,12 @@
 {{-- ══ SIDEBAR ══ --}}
 <aside class="h-screen w-64 fixed left-0 top-0 bg-slate-50 border-r border-slate-200/50 flex flex-col py-6 z-40">
     <div class="px-6 mb-10 flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center text-white">
-            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">medical_services</span>
+        <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
+            <span class="material-symbols-outlined text-2xl">medical_services</span>
         </div>
         <div>
-            <h2 class="text-lg font-black text-teal-900 tracking-tight">Vitality Admin</h2>
-            <p class="text-[10px] uppercase tracking-widest text-secondary font-bold">Clinical Excellence</p>
+            <h2 class="text-lg font-black text-teal-900 tracking-tight">Cabinet Médical</h2>
+            <p class="text-[10px] uppercase tracking-widest text-secondary font-bold">Administration</p>
         </div>
     </div>
     <nav class="flex-1 space-y-1 px-3">
@@ -94,7 +94,7 @@
         </div>
     </header>
 
-    <main class="flex-1 p-8 space-y-8">
+    <main class="flex-1 p-8 space-y-8 pb-0">
 
         {{-- Flash --}}
         @if (session('success'))
@@ -115,6 +115,11 @@
                 <h1 class="text-4xl font-bold tracking-tight text-teal-900">Base de Données Patients</h1>
                 <p class="text-secondary max-w-2xl">Gérez les dossiers de vos patients depuis une interface centralisée.</p>
             </div>
+            <button onclick="openAddModal()"
+                    class="cta-gradient text-white px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-[20px]">person_add</span>
+                Ajouter un Patient
+            </button>
         </section>
 
         {{-- Table --}}
@@ -165,6 +170,11 @@
                             <td class="px-6 py-4 text-sm text-on-surface-variant">{{ $patient->telephone ?? '—' }}</td>
                             <td class="px-8 py-4 text-right">
                                 <div class="flex items-center justify-end gap-1">
+                                    {{-- Detail --}}
+                                    <a href="{{ route('admin.patients.detail', $patient->id) }}"
+                                       class="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors" title="Voir le dossier">
+                                        <span class="material-symbols-outlined text-lg">person_search</span>
+                                    </a>
                                     {{-- Edit --}}
                                     <button onclick="openPatientModal({{ $patient->id }}, '{{ addslashes($patient->user->name) }}', '{{ addslashes($patient->user->email) }}', '{{ addslashes($patient->telephone) }}', '{{ addslashes($patient->cin) }}')"
                                             class="p-2 text-secondary hover:bg-secondary/10 rounded-lg transition-colors" title="Modifier">
@@ -203,6 +213,73 @@
             </div>
         </section>
     </main>
+
+    {{-- Footer --}}
+    <footer class="w-full py-6 bg-white border-t border-slate-200 flex flex-col md:flex-row justify-between items-center px-8">
+        <div class="text-xs text-slate-500 mb-4 md:mb-0">© 2024 Cabinet Médical. Tous droits réservés.</div>
+        <div class="flex gap-6">
+            <a class="text-xs text-slate-500 hover:text-teal-500 transition-colors" href="#">Politique de confidentialité</a>
+            <a class="text-xs text-slate-500 hover:text-teal-500 transition-colors" href="#">Conditions d'utilisation</a>
+            <a class="text-xs text-slate-500 hover:text-teal-500 transition-colors" href="#">Conformité HIPAA</a>
+        </div>
+    </footer>
+</div>
+
+{{-- ══ ADD MODAL ══ --}}
+<div id="modal-add-patient" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center">
+            <div>
+                <h3 class="text-xl font-bold text-teal-900">Ajouter un Patient</h3>
+                <p class="text-xs text-slate-500 mt-1">Créez un nouveau compte patient</p>
+            </div>
+            <button onclick="closeAddModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200">
+                <span class="material-symbols-outlined text-[18px]">close</span>
+            </button>
+        </div>
+        <form method="POST" action="{{ route('admin.patients.store') }}" class="p-8 overflow-y-auto flex-1 space-y-6">
+            @csrf
+            <div class="grid grid-cols-2 gap-4">
+                <div class="col-span-2">
+                    <label class="block text-[11px] font-bold text-slate-500 mb-2">Nom Complet</label>
+                    <input type="text" name="name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20" placeholder="Prénom Nom" required>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-2">Email</label>
+                    <input type="email" name="email" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20" placeholder="patient@email.com" required>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-2">Mot de passe provisoire</label>
+                    <input type="password" name="password" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20" placeholder="••••••••" required>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-2">CIN</label>
+                    <input type="text" name="cin" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20" placeholder="AB123456">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-2">Téléphone</label>
+                    <input type="text" name="telephone" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20" placeholder="06 XX XX XX XX">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-2">Date de naissance</label>
+                    <input type="date" name="date_naissance" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-2">Adresse</label>
+                    <input type="text" name="adresse" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20" placeholder="Rue, Ville">
+                </div>
+            </div>
+            <div class="pt-4 flex justify-end gap-3 border-t border-slate-100">
+                <button type="button" onclick="closeAddModal()" class="px-6 py-2.5 rounded-xl font-bold text-sm text-slate-500 hover:bg-slate-100">
+                    Annuler
+                </button>
+                <button type="submit" class="cta-gradient text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    Enregistrer
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
 {{-- ══ EDIT MODAL ══ --}}
@@ -257,6 +334,14 @@
 </div>
 
 <script>
+    function openAddModal() {
+        document.getElementById('modal-add-patient').classList.remove('hidden');
+        document.getElementById('modal-add-patient').classList.add('flex');
+    }
+    function closeAddModal() {
+        document.getElementById('modal-add-patient').classList.add('hidden');
+        document.getElementById('modal-add-patient').classList.remove('flex');
+    }
     function openPatientModal(id, name, email, telephone, cin) {
         document.getElementById('ep-name').value      = name;
         document.getElementById('ep-email').value     = email;

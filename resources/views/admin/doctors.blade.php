@@ -40,12 +40,12 @@
 {{-- ══ SIDEBAR ══ --}}
 <aside class="h-screen w-64 fixed left-0 top-0 bg-slate-50 border-r border-slate-200/50 flex flex-col py-6 z-40">
     <div class="px-6 mb-10 flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center text-white">
-            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">medical_services</span>
+        <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
+            <span class="material-symbols-outlined text-2xl">medical_services</span>
         </div>
         <div>
-            <h2 class="text-lg font-black text-teal-900 tracking-tight">Vitality Admin</h2>
-            <p class="text-[10px] uppercase tracking-widest text-secondary font-bold">Clinical Excellence</p>
+            <h2 class="text-lg font-black text-teal-900 tracking-tight">Cabinet Médical</h2>
+            <p class="text-[10px] uppercase tracking-widest text-secondary font-bold">Administration</p>
         </div>
     </div>
     <nav class="flex-1 space-y-1 px-3">
@@ -94,7 +94,7 @@
         </div>
     </header>
 
-    <main class="flex-1 p-8 space-y-8">
+    <main class="flex-1 p-8 space-y-8 pb-0">
 
         {{-- Flash --}}
         @if (session('success'))
@@ -219,6 +219,16 @@
             </div>
         </section>
     </main>
+
+    {{-- Footer --}}
+    <footer class="w-full py-6 bg-white border-t border-slate-200 flex flex-col md:flex-row justify-between items-center px-8">
+        <div class="text-xs text-slate-500 mb-4 md:mb-0">© 2024 Cabinet Médical. Tous droits réservés.</div>
+        <div class="flex gap-6">
+            <a class="text-xs text-slate-500 hover:text-teal-500 transition-colors" href="#">Politique de confidentialité</a>
+            <a class="text-xs text-slate-500 hover:text-teal-500 transition-colors" href="#">Conditions d'utilisation</a>
+            <a class="text-xs text-slate-500 hover:text-teal-500 transition-colors" href="#">Conformité HIPAA</a>
+        </div>
+    </footer>
 </div>
 
 {{-- ══ ADD MODAL ══ --}}

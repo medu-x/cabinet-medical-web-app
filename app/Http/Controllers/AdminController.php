@@ -99,6 +99,38 @@ class AdminController extends Controller
         return view('admin.patients', compact('patients'));
     }
 
+    public function storePatient(Request $request)
+    {
+        $validated = $request->validate([
+            'name'          => 'required|string|max:255',
+            'email'         => 'required|email|unique:users,email',
+            'password'      => 'required|min:6',
+            'cin'           => 'nullable|string|max:20|unique:patients,cin',
+            'telephone'     => 'nullable|string|max:20',
+            'date_naissance'=> 'nullable|date',
+            'adresse'       => 'nullable|string|max:255',
+        ]);
+
+        $user = User::create([
+            'name'     => $validated['name'],
+            'email'    => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role'     => 'patient',
+        ]);
+
+        $patient = Patient::create([
+            'user_id'        => $user->id,
+            'cin'            => $validated['cin'] ?? null,
+            'telephone'      => $validated['telephone'] ?? null,
+            'date_naissance' => $validated['date_naissance'] ?? null,
+            'adresse'        => $validated['adresse'] ?? null,
+        ]);
+
+        \App\Models\DossierMedical::create(['patient_id' => $patient->id]);
+
+        return redirect()->route('admin.patients')->with('success', 'Patient ajouté avec succès.');
+    }
+
     public function destroyPatient($id)
     {
         $patient = Patient::findOrFail($id);
@@ -136,6 +168,32 @@ class AdminController extends Controller
     {
         $secretaires = Secretaire::with('user')->latest()->paginate(15);
         return view('admin.secrataires', compact('secretaires'));
+    }
+
+    public function storeSecretaire(Request $request)
+    {
+        $validated = $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
+            'cin'      => 'required|string|max:20|unique:secretaires,cin',
+            'bureau'   => 'required|in:A,B,C',
+        ]);
+
+        $user = User::create([
+            'name'     => $validated['name'],
+            'email'    => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role'     => 'secretary',
+        ]);
+
+        Secretaire::create([
+            'user_id' => $user->id,
+            'cin'     => $validated['cin'],
+            'bureau'  => $validated['bureau'],
+        ]);
+
+        return redirect()->route('admin.secrataires')->with('success', 'Secrétaire ajoutée avec succès.');
     }
 
     public function destroySecretaire($id)
@@ -214,6 +272,25 @@ class AdminController extends Controller
         $medecin = Medecin::findOrFail($id);
         $medecin->user()->delete(); // cascades to medecin via onDelete('cascade')
         return redirect()->route('admin.doctors')->with('success', 'Médecin supprimé avec succès.');
+    }
+
+    // ─── PATIENT DETAIL ───────────────────────────────────────────────────────
+
+    public function patientDetail($id)
+    {
+        $patient = Patient::with(['user', 'dossierMedical'])->findOrFail($id);
+
+        $rendezVous = RendezVous::with(['medecin.user', 'medecin.specialite'])
+            ->where('patient_id', $patient->id)
+            ->orderBy('date_rendez_vous', 'desc')
+            ->get();
+
+        $consultations = \App\Models\Consultation::with(['ordonnances', 'medecin.user', 'medecin.specialite'])
+            ->where('patient_id', $patient->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('admin.patient-detail', compact('patient', 'rendezVous', 'consultations'));
     }
 
     public function updateDoctor(Request $request, $id)

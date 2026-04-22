@@ -41,6 +41,10 @@ Route::get('/patient/mes-rendez-vous', [PatientController::class, 'rendezVousInd
     ->name('patient.rendezvous.index')
     ->middleware(['auth','role:patient']);
 
+Route::get('/patient/profil', [PatientController::class, 'profil'])
+    ->name('patient.profil')
+    ->middleware(['auth','role:patient']);
+
 
 
 // Espace Secrétaire (UI routes)
@@ -65,11 +69,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
     // Patients
     Route::get('/patients',               [AdminController::class, 'patients'])->name('admin.patients');
+    Route::post('/patients',              [AdminController::class, 'storePatient'])->name('admin.patients.store');
     Route::patch('/patients/{id}',        [AdminController::class, 'updatePatient'])->name('admin.patients.update');
     Route::delete('/patients/{id}',       [AdminController::class, 'destroyPatient'])->name('admin.patients.destroy');
 
     // Secrétaires
     Route::get('/secrataires',            [AdminController::class, 'secretaires'])->name('admin.secrataires');
+    Route::post('/secrataires',           [AdminController::class, 'storeSecretaire'])->name('admin.secrataires.store');
     Route::patch('/secrataires/{id}',     [AdminController::class, 'updateSecretaire'])->name('admin.secrataires.update');
     Route::delete('/secrataires/{id}',    [AdminController::class, 'destroySecretaire'])->name('admin.secrataires.destroy');
 
@@ -78,6 +84,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/doctors',               [AdminController::class, 'storeDoctor'])->name('admin.doctors.store');
     Route::patch('/doctors/{id}',         [AdminController::class, 'updateDoctor'])->name('admin.doctors.update');
     Route::delete('/doctors/{id}',        [AdminController::class, 'destroyDoctor'])->name('admin.doctors.destroy');
+
+    // Patient detail
+    Route::get('/patients/{id}/detail',   [AdminController::class, 'patientDetail'])->name('admin.patients.detail');
 });
 
 
