@@ -10,32 +10,48 @@ use Illuminate\Support\Str;
 
 class SecretarySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
-        // On crée l'utilisateur Secrétaire
-        $user = User::firstOrCreate(
-            ['email' => 'secretary@cabinet.com'],
+        $secretaires = [
             [
-                'name' => 'Sophie La Secrétaire',
-                'password' => Hash::make('password'),
-                'role' => 'secretary',
-                'remember_token' => Str::random(10),
-            ]
-        );
+                'name'   => 'Sophie Benali',
+                'email'  => 'secretary@cabinet.com',
+                'cin'    => 'SEC12345',
+                'bureau' => 'A',
+            ],
+            [
+                'name'   => 'Karim Ouali',
+                'email'  => 'k.ouali@cabinet.com',
+                'cin'    => 'SEC67890',
+                'bureau' => 'B',
+            ],
+            [
+                'name'   => 'Nadia Tahiri',
+                'email'  => 'n.tahiri@cabinet.com',
+                'cin'    => 'SEC11223',
+                'bureau' => 'C',
+            ],
+        ];
 
-        // On lui crée sa fiche secrétaire associée
-        Secretaire::firstOrCreate(
-            ['user_id' => $user->id],
-            [
-                'cin' => 'SEC12345',
-                'bureau' => 'Accueil Principal',
-                'adresse' => 'Bureau A, RdC Cabinet Vitality',
-            ]
-        );
+        foreach ($secretaires as $data) {
+            $user = User::firstOrCreate(
+                ['email' => $data['email']],
+                [
+                    'name'           => $data['name'],
+                    'password'       => Hash::make('password'),
+                    'role'           => 'secretary',
+                    'remember_token' => Str::random(10),
+                ]
+            );
+
+            Secretaire::firstOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'cin'    => $data['cin'],
+                    'bureau' => $data['bureau'],
+                ]
+            );
+        }
     }
 }
+

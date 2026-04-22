@@ -201,18 +201,7 @@
                     <p class="text-on-surface-variant mt-1">Données analytiques pour la période du 1er au 28 Octobre
                         2024</p>
                 </div>
-                <div class="flex gap-2">
-                    <button
-                        class="bg-surface-container-lowest px-4 py-2 rounded-xl text-sm font-medium border border-outline-variant/20 hover:bg-surface-container-low transition-colors flex items-center gap-2">
-                        <span class="material-symbols-outlined text-lg">calendar_month</span>
-                        Derniers 30 jours
-                    </button>
-                    <button
-                        class="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold custom-shadow hover:brightness-110 transition-all flex items-center gap-2">
-                        <span class="material-symbols-outlined text-lg">download</span>
-                        Exporter PDF
-                    </button>
-                </div>
+                
             </div>
             <!-- Bento Grid - KPIs -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

@@ -11,6 +11,7 @@ class Medecin extends Model
     protected $table = 'medecins';
     protected $fillable = [
         'user_id',
+        'cin',
         'telephone',
         'bio',
         'experience',
