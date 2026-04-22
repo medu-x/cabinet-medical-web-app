@@ -78,10 +78,9 @@
 
 <!-- Main Content Wrapper -->
 <div class="ml-64 flex flex-col min-h-screen">
-    <!-- TopAppBar -->
     <header class="w-full sticky top-0 z-30 bg-white/80 backdrop-blur-xl shadow-sm border-b border-slate-100">
         <div class="flex items-center justify-between px-8 py-3 w-full">
-            <h1 class="text-lg font-bold text-teal-900">Vue Globale d'Aujourd'hui</h1>
+            <h1 class="text-lg font-bold text-teal-900">File quotidienne du secrétariat</h1>
             <div class="flex items-center gap-4">
                 <div class="text-right">
                     <p class="text-sm font-bold text-teal-800 leading-none">{{ Auth::user()->name }}</p>
@@ -91,78 +90,214 @@
         </div>
     </header>
 
-    <!-- Canvas Area -->
     <main class="flex-1 p-8 space-y-8">
         <section class="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div class="space-y-2">
-                <h1 class="text-4xl font-bold tracking-tight text-teal-900">File d'attente En Direct</h1>
-                <p class="text-secondary max-w-2xl">Visualisez et gérez les patients présents dans la salle d'attente à l'instant T.</p>
+                <h1 class="text-4xl font-bold tracking-tight text-teal-900">Circuit des rendez-vous du jour</h1>
+                <p class="text-secondary max-w-3xl">Gérez uniquement les rendez-vous d'aujourd'hui et déplacez chaque patient de l'attente à la consultation, puis vers les dossiers clôturés une fois la visite terminée ou en cas d'absence.</p>
             </div>
             <div class="text-right">
-                <div class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">Date d'aujourd'hui</div>
+                <div class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">Aujourd'hui</div>
                 <div class="text-2xl font-black text-primary">{{ \Carbon\Carbon::now()->locale('fr')->translatedFormat('l j F Y') }}</div>
             </div>
         </section>
 
-        <!-- Dynamic Queue Section -->
-        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Col 1: En Consultation -->
-            <div class="bg-primary/5 rounded-2xl p-6 border border-primary/20 flex flex-col">
-                <h3 class="font-bold text-teal-900 flex items-center gap-2 mb-4">
-                    <span class="material-symbols-outlined text-primary">meeting_room</span>
-                    En Consultation
-                </h3>
-                <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100 mb-3">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="text-[10px] font-bold text-white bg-primary px-2 py-0.5 rounded uppercase tracking-wider">Actuel</span>
-                        <span class="text-xs font-bold text-slate-500">09:00</span>
+        @if (session('success'))
+            <div class="rounded-2xl border border-green-200 bg-green-50 px-5 py-4 text-sm font-semibold text-green-800">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-semibold text-red-700">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
+                <p class="font-bold">Veuillez corriger les erreurs suivantes :</p>
+                <ul class="mt-2 list-disc pl-5 space-y-1">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="rounded-[2rem] bg-white border border-slate-100 px-6 py-5 shadow-sm">
+                <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Total du jour</p>
+                <p class="mt-2 text-3xl font-black text-teal-900">{{ $todayRendezVous->count() }}</p>
+                <p class="text-sm text-slate-500">Rendez-vous programmés aujourd'hui</p>
+            </div>
+            <div class="rounded-[2rem] bg-white border border-slate-100 px-6 py-5 shadow-sm">
+                <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">En attente</p>
+                <p class="mt-2 text-3xl font-black text-orange-600">{{ $waitingReservations->count() }}</p>
+                <p class="text-sm text-slate-500">En attente au secrétariat</p>
+            </div>
+            <div class="rounded-[2rem] bg-white border border-slate-100 px-6 py-5 shadow-sm">
+                <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">En consultation</p>
+                <p class="mt-2 text-3xl font-black text-green-700">{{ $inConsultationReservations->count() }}</p>
+                <p class="text-sm text-slate-500">Actuellement chez le médecin</p>
+            </div>
+            <div class="rounded-[2rem] bg-white border border-slate-100 px-6 py-5 shadow-sm">
+                <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Clôturés</p>
+                <p class="mt-2 text-3xl font-black text-slate-700">{{ $closedReservations->count() }}</p>
+                <p class="text-sm text-slate-500">Terminés ou absents aujourd'hui</p>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <div class="rounded-[2rem] border border-orange-200 bg-orange-50/70 p-6">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h2 class="text-lg font-black text-orange-900 flex items-center gap-2">
+                            <span class="material-symbols-outlined">schedule</span>
+                            Réservations du jour
+                        </h2>
+                        <p class="text-sm text-orange-700 mt-1">Confirmez l'arrivée ou marquez le patient comme absent.</p>
                     </div>
-                    <p class="font-bold text-teal-900">Marie Durand</p>
-                    <p class="text-xs text-slate-500">Dr. Dupont (Généraliste)</p>
+                    <span class="rounded-full bg-white px-3 py-1 text-xs font-black uppercase tracking-wider text-orange-700">
+                        {{ $waitingReservations->count() }}
+                    </span>
+                </div>
+
+                <div class="space-y-4">
+                    @forelse ($waitingReservations as $rdv)
+                        <div class="rounded-2xl bg-white p-5 border border-orange-100 shadow-sm">
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <p class="text-lg font-black text-slate-800">{{ $rdv->patient->user->name ?? 'Patient inconnu' }}</p>
+                                    <p class="text-sm text-slate-500">Dr. {{ $rdv->medecin->user->name ?? 'Médecin inconnu' }}</p>
+                                </div>
+                                <span class="rounded-lg bg-orange-100 px-3 py-1 text-xs font-black uppercase tracking-wider text-orange-700">
+                                    {{ substr($rdv->heure_rendez_vous, 0, 5) }}
+                                </span>
+                            </div>
+                            <div class="mt-4 space-y-1 text-sm text-slate-500">
+                                <p>CIN : <span class="font-semibold text-slate-700">{{ $rdv->patient->cin ?? 'Non renseigné' }}</span></p>
+                                <p>Spécialité : <span class="font-semibold text-slate-700">{{ $rdv->medecin->specialite->nom ?? 'Non renseignée' }}</span></p>
+                            </div>
+                            <div class="mt-5 flex gap-3">
+                                <form action="{{ route('secretary.rendezvous.status', $rdv) }}" method="POST" class="flex-1">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="statut" value="confirmé">
+                                    <button type="submit" class="w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white hover:bg-primary-container transition-colors">
+                                        Confirmer
+                                    </button>
+                                </form>
+                                <form action="{{ route('secretary.rendezvous.status', $rdv) }}" method="POST" class="flex-1">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="statut" value="annulé">
+                                    <button type="submit" class="w-full rounded-xl bg-red-100 px-4 py-3 text-sm font-bold text-red-700 hover:bg-red-200 transition-colors">
+                                        Absent
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="rounded-2xl border border-dashed border-orange-200 bg-white/70 px-5 py-10 text-center text-sm text-slate-500">
+                            Aucun rendez-vous en attente pour aujourd'hui.
+                        </div>
+                    @endforelse
                 </div>
             </div>
 
-            <!-- Col 2: En Salle d'attente -->
-            <div class="bg-surface-container-low rounded-2xl p-6 border border-slate-200 flex flex-col lg:col-span-2">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-bold text-teal-900 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-secondary">airline_seat_recline_normal</span>
-                        Patients en Salle d'Attente
-                    </h3>
-                    <span class="bg-teal-100 text-teal-800 text-xs font-bold px-3 py-1 rounded-full">3 Personnes</span>
+            <div class="rounded-[2rem] border border-green-200 bg-green-50/70 p-6">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h2 class="text-lg font-black text-green-900 flex items-center gap-2">
+                            <span class="material-symbols-outlined">medical_services</span>
+                            En consultation
+                        </h2>
+                        <p class="text-sm text-green-700 mt-1">Patients déjà envoyés chez le médecin.</p>
+                    </div>
+                    <span class="rounded-full bg-white px-3 py-1 text-xs font-black uppercase tracking-wider text-green-700">
+                        {{ $inConsultationReservations->count() }}
+                    </span>
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-slate-100 flex justify-center items-center font-bold text-slate-500">
-                            1
+
+                <div class="space-y-4">
+                    @forelse ($inConsultationReservations as $rdv)
+                        <div class="rounded-2xl bg-white p-5 border border-green-100 shadow-sm">
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <p class="text-lg font-black text-slate-800">{{ $rdv->patient->user->name ?? 'Patient inconnu' }}</p>
+                                    <p class="text-sm text-slate-500">Dr. {{ $rdv->medecin->user->name ?? 'Médecin inconnu' }}</p>
+                                </div>
+                                <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-black uppercase tracking-wider text-green-700">
+                                    {{ substr($rdv->heure_rendez_vous, 0, 5) }}
+                                </span>
+                            </div>
+                            <div class="mt-4 space-y-1 text-sm text-slate-500">
+                                <p>Téléphone : <span class="font-semibold text-slate-700">{{ $rdv->patient->telephone ?? 'Non renseigné' }}</span></p>
+                                <p>Spécialité : <span class="font-semibold text-slate-700">{{ $rdv->medecin->specialite->nom ?? 'Non renseignée' }}</span></p>
+                            </div>
+                            <div class="mt-5">
+                                <form action="{{ route('secretary.rendezvous.status', $rdv) }}" method="POST">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="statut" value="termine">
+                                    <button type="submit" class="w-full rounded-xl bg-slate-800 px-4 py-3 text-sm font-bold text-white hover:bg-slate-900 transition-colors">
+                                        Terminer
+                                    </button>
+                                </form>
+                            </div>
                         </div>
-                        <div>
-                            <p class="font-bold text-teal-900">Jean Tremblay</p>
-                            <p class="text-xs text-slate-500 mb-1">Arrivé à 09:15</p>
-                            <span class="text-[10px] bg-orange-100 text-orange-800 font-bold px-2 py-0.5 rounded uppercase">Urgences Mineures</span>
+                    @empty
+                        <div class="rounded-2xl border border-dashed border-green-200 bg-white/70 px-5 py-10 text-center text-sm text-slate-500">
+                            Aucun patient n'est actuellement en consultation.
                         </div>
+                    @endforelse
+                </div>
+            </div>
+
+            <div class="rounded-[2rem] border border-slate-200 bg-slate-100/70 p-6">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h2 class="text-lg font-black text-slate-800 flex items-center gap-2">
+                            <span class="material-symbols-outlined">task_alt</span>
+                            Clôturés aujourd'hui
+                        </h2>
+                        <p class="text-sm text-slate-600 mt-1">Consultations terminées et patients absents.</p>
                     </div>
-                    <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-slate-100 flex justify-center items-center font-bold text-slate-500">
-                            2
+                    <span class="rounded-full bg-white px-3 py-1 text-xs font-black uppercase tracking-wider text-slate-700">
+                        {{ $closedReservations->count() }}
+                    </span>
+                </div>
+
+                <div class="space-y-4">
+                    @forelse ($closedReservations as $rdv)
+                        @php
+                            $isTerminated = in_array($rdv->statut, ['termine', 'terminé'], true);
+                            $badgeClasses = $isTerminated
+                                ? 'bg-slate-800 text-white'
+                                : 'bg-red-100 text-red-700';
+                            $badgeLabel = $isTerminated ? 'Terminé' : 'Absent';
+                        @endphp
+                        <div class="rounded-2xl bg-white p-5 border border-slate-200 shadow-sm">
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <p class="text-lg font-black text-slate-800">{{ $rdv->patient->user->name ?? 'Patient inconnu' }}</p>
+                                    <p class="text-sm text-slate-500">Dr. {{ $rdv->medecin->user->name ?? 'Médecin inconnu' }}</p>
+                                </div>
+                                <span class="rounded-lg {{ $badgeClasses }} px-3 py-1 text-xs font-black uppercase tracking-wider">
+                                    {{ $badgeLabel }}
+                                </span>
+                            </div>
+                            <div class="mt-4 space-y-1 text-sm text-slate-500">
+                                <p>Heure : <span class="font-semibold text-slate-700">{{ substr($rdv->heure_rendez_vous, 0, 5) }}</span></p>
+                                <p>Spécialité : <span class="font-semibold text-slate-700">{{ $rdv->medecin->specialite->nom ?? 'Non renseignée' }}</span></p>
+                            </div>
                         </div>
-                        <div>
-                            <p class="font-bold text-teal-900">Lucas Fontaine</p>
-                            <p class="text-xs text-slate-500 mb-1">Prévu à 09:30 (Présent)</p>
-                            <span class="text-[10px] bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded uppercase">Généraliste</span>
+                    @empty
+                        <div class="rounded-2xl border border-dashed border-slate-300 bg-white/70 px-5 py-10 text-center text-sm text-slate-500">
+                            Aucun rendez-vous terminé ou absent pour le moment.
                         </div>
-                    </div>
-                    <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-slate-100 flex justify-center items-center font-bold text-slate-500">
-                            3
-                        </div>
-                        <div>
-                            <p class="font-bold text-teal-900">Fatima Berrada</p>
-                            <p class="text-xs text-slate-500 mb-1">Prévu à 10:00 (Présente)</p>
-                            <span class="text-[10px] bg-purple-100 text-purple-800 font-bold px-2 py-0.5 rounded uppercase">Cardiologie</span>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
             </div>
         </section>

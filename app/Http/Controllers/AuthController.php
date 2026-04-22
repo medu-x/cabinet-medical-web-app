@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Patient;
 use App\Models\DossierMedical;
+use RuntimeException;
 
 class AuthController extends Controller
 {
@@ -104,12 +105,20 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
+        $user = User::where('email', $credentials['email'])->first();
+
         // STEP 2: Attempt to login
         // Auth::attempt() does TWO things:
         //   1. Finds the useecks if Hash::chr by email
         //   2. Check(plain_password, hashed_password) matches
         // $request->boolean('remember') reads the "remember me" checkbox
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        try {
+            $authenticated = Auth::attempt($credentials, $request->boolean('remember'));
+        } catch (RuntimeException $exception) {
+            $authenticated = false;
+        }
+
+        if ($authenticated) {
 
             // STEP 3: Regenerate session (security — prevents session fixation attacks)
             $request->session()->regenerate();
@@ -119,6 +128,20 @@ class AuthController extends Controller
             return redirect()->intended(route('dashboard'));
 
             // intended() remembers where the user was trying to go before being redirected to login
+        }
+
+        // Legacy-hash fallback:
+        // if the stored password uses a different algorithm, verify once with PHP directly,
+        // then rehash it with the application's current hasher.
+        if ($user && password_verify($credentials['password'], $user->password)) {
+            $user->forceFill([
+                'password' => Hash::make($credentials['password']),
+            ])->save();
+
+            Auth::login($user, $request->boolean('remember'));
+            $request->session()->regenerate();
+
+            return redirect()->intended(route('dashboard'));
         }
 
         // If login failed, redirect back with an error on the 'email' field
