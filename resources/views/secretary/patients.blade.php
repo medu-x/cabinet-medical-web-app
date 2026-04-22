@@ -40,11 +40,11 @@
 <aside class="h-screen w-64 fixed left-0 top-0 bg-slate-50 border-r border-slate-200/50 flex flex-col py-6 z-40">
     <div class="px-6 mb-10">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center text-white">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+            <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
+                <span class="material-symbols-outlined text-2xl">medical_services</span>
             </div>
             <div>
-                <h2 class="text-lg font-black text-teal-900 tracking-tight">Accueil Cabinet</h2>
+                <h2 class="text-lg font-black text-teal-900 tracking-tight">Cabinet Médical</h2>
                 <p class="text-[10px] uppercase tracking-widest text-secondary font-bold">Espace Secrétaire</p>
             </div>
         </div>
@@ -65,13 +65,10 @@
     </nav>
     <div class="mt-auto px-4 space-y-1">
         <div class="h-px bg-slate-200/50 mb-4 mx-2"></div>
-        <form action="/logout" method="POST">
-            @csrf
-            <button type="submit" class="w-full flex items-center px-6 py-3 text-sm font-medium tracking-wide text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200">
-                <span class="material-symbols-outlined mr-3">logout</span>
-                Déconnexion
-            </button>
-        </form>
+        <a href="{{ route('logout') }}" class="w-full flex items-center px-6 py-3 text-sm font-medium tracking-wide text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200">
+            <span class="material-symbols-outlined mr-3">logout</span>
+            Déconnexion
+        </a>
     </div>
 </aside>
 
@@ -89,6 +86,7 @@
                     <p class="text-sm font-bold text-teal-800 leading-none">{{ Auth::user()->name }}</p>
                     <p class="text-[10px] text-slate-500">Secrétaire Médicale</p>
                 </div>
+                <img src="{{ Auth::user()->photo_url }}" class="w-10 h-10 rounded-full object-cover ring-2 ring-teal-50" alt="">
             </div>
         </div>
     </header>
@@ -189,6 +187,14 @@
             </div>
         </section>
     </main>
+    <footer class="w-full py-6 mt-auto bg-white border-t border-slate-200 flex flex-col md:flex-row justify-between items-center px-8 gap-4">
+        <p class="text-xs text-slate-500">© 2024 Cabinet Médical. Tous droits réservés.</p>
+        <div class="flex items-center gap-6">
+            <a href="#" class="text-xs text-slate-400 hover:text-primary transition-colors">Politique de confidentialité</a>
+            <a href="#" class="text-xs text-slate-400 hover:text-primary transition-colors">Conditions d'utilisation</a>
+            <a href="#" class="text-xs text-slate-400 hover:text-primary transition-colors">Support</a>
+        </div>
+    </footer>
 </div>
 
 <div id="modal-add-patient" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
