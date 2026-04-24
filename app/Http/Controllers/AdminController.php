@@ -8,9 +8,9 @@ use App\Models\Medecin;
 use App\Models\Secretaire;
 use App\Models\Specialite;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -36,10 +36,11 @@ class AdminController extends Controller
             ->whereMonth('date_rendez_vous', now()->month)
             ->count();
 
-        $monthlyRendezVous = RendezVous::selectRaw('MONTH(date_rendez_vous) as month_number, COUNT(*) as total')
-            ->whereYear('date_rendez_vous', $selectedYear)
-            ->groupBy(DB::raw('MONTH(date_rendez_vous)'))
-            ->pluck('total', 'month_number');
+        $monthlyRendezVous = RendezVous::whereYear('date_rendez_vous', $selectedYear)
+            ->get(['date_rendez_vous'])
+            ->countBy(function (RendezVous $rendezVous) {
+                return Carbon::parse($rendezVous->date_rendez_vous)->month;
+            });
 
         $chartLabels = ['JAN', 'FEV', 'MAR', 'AVR', 'MAI', 'JUN', 'JUL', 'AOU', 'SEP', 'OCT', 'NOV', 'DEC'];
         $chartData = [];

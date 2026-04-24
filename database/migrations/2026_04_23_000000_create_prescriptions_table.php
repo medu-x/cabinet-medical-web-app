@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('medicament');
             $table->string('dosage');
             $table->string('frequence');
-            $table->text('instructions');
+            $table->text('instructions')->nullable();
             $table->timestamps();
         });
     }

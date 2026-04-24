@@ -347,6 +347,10 @@
                         <td class="key">Email</td>
                         <td class="val">{{ $rendezVous->patient->user->email }}</td>
                     </tr>
+                    <tr class="row">
+                        <td class="key">Cin</td>
+                        <td class="val">{{ $rendezVous->patient->cin }}</td>
+                    </tr>
                 </table>
             </div>
 

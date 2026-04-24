@@ -31,30 +31,32 @@ class RendezVousController extends Controller
             })
             ->values();
 
-        $patients = Patient::with('user')
-            ->get()
-            ->sortBy(fn (Patient $patient) => $patient->user?->name ?? '')
-            ->values();
-
         $medecins = Medecin::with(['user', 'specialite'])
             ->get()
             ->sortBy(fn (Medecin $medecin) => $medecin->user?->name ?? '')
             ->values();
 
-        return view('secretary.rendezvous', compact('rendezVous', 'patients', 'medecins'));
+        return view('secretary.rendezvous', compact('rendezVous', 'medecins'));
     }
 
     public function secretaryStore(Request $request)
     {
         $validated = $request->validate([
-            'patient_id' => ['required', 'exists:patients,id'],
-            'medecin_id' => ['required', 'exists:medecins,id'],
+            'cin'              => ['required', 'string'],
+            'medecin_id'       => ['required', 'exists:medecins,id'],
             'date_rendez_vous' => ['required', 'date'],
-            'heure_rendez_vous' => ['required', 'date_format:H:i'],
-            'statut' => ['required', 'in:en_attente,confirmé'],
+            'heure_rendez_vous'=> ['required', 'date_format:H:i'],
+            'statut'           => ['required', 'in:en_attente,confirmé'],
         ]);
 
+        $patient = Patient::whereRaw('LOWER(cin) = ?', [strtolower(trim($validated['cin']))])->first();
+
+        if (! $patient) {
+            return back()->withInput()->withErrors(['cin' => 'Aucun patient trouvé avec ce CIN.']);
+        }
+
         $slotDateTime = Carbon::parse($validated['date_rendez_vous'] . ' ' . $validated['heure_rendez_vous']);
+        $normalizedHeureRendezVous = $slotDateTime->format('H:i:s');
 
         if ($slotDateTime->lt(now()->startOfMinute())) {
             return back()
@@ -66,7 +68,7 @@ class RendezVousController extends Controller
 
         $exists = RendezVous::where('medecin_id', $validated['medecin_id'])
             ->where('date_rendez_vous', $validated['date_rendez_vous'])
-            ->where('heure_rendez_vous', $validated['heure_rendez_vous'])
+            ->where('heure_rendez_vous', $normalizedHeureRendezVous)
             ->exists();
 
         if ($exists) {
@@ -77,7 +79,13 @@ class RendezVousController extends Controller
                 ]);
         }
 
-        RendezVous::create($validated);
+        RendezVous::create([
+            'patient_id'        => $patient->id,
+            'medecin_id'        => $validated['medecin_id'],
+            'date_rendez_vous'  => $validated['date_rendez_vous'],
+            'heure_rendez_vous' => $normalizedHeureRendezVous,
+            'statut'            => $validated['statut'],
+        ]);
 
         return redirect()
             ->route('secretary.rendezvous')
@@ -89,10 +97,11 @@ class RendezVousController extends Controller
         $request->validate([
             'medecin_id' => ['required', 'exists:medecins,id'],
             'date_rendez_vous' => ['required', 'date'],
-            'heure_rendez_vous' => ['required'],
+            'heure_rendez_vous' => ['required', 'date_format:H:i'],
         ]);
 
         $slotDateTime = \Carbon\Carbon::parse($request->date_rendez_vous . ' ' . $request->heure_rendez_vous);
+        $normalizedHeureRendezVous = $slotDateTime->format('H:i:s');
 
         // Reject past or within 60-min slots
         if (now()->diffInMinutes($slotDateTime, false) < 60) {
@@ -115,7 +124,7 @@ class RendezVousController extends Controller
 
         $exists = RendezVous::where('medecin_id', $request->medecin_id)
             ->where('date_rendez_vous', $request->date_rendez_vous)
-            ->where('heure_rendez_vous', $request->heure_rendez_vous)
+            ->where('heure_rendez_vous', $normalizedHeureRendezVous)
             ->exists();
 
         if ($exists) {
@@ -134,7 +143,7 @@ class RendezVousController extends Controller
                 'patient_id' => $user->patient->id,
                 'medecin_id' => $request->medecin_id,
                 'date_rendez_vous' => $request->date_rendez_vous,
-                'heure_rendez_vous' => $request->heure_rendez_vous,
+                'heure_rendez_vous' => $normalizedHeureRendezVous,
                 'statut' => 'en_attente',
             ]);
 

@@ -124,7 +124,7 @@
                     </div>
 
                     <div class="pt-2">
-                        <button class="w-full py-4 px-6 bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold rounded-xl shadow-[0_4px_20px_-2px_rgba(0,104,118,0.25)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 group" type="submit">
+                        <button id="forgot-btn" class="w-full py-4 px-6 bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold rounded-xl shadow-[0_4px_20px_-2px_rgba(0,104,118,0.25)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 group" type="submit">
                             Envoyer le code
                             <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">send</span>
                         </button>
@@ -140,5 +140,27 @@
             </div>
         </section>
     </main>
+<script>
+    document.querySelector('form').addEventListener('submit', function () {
+        const btn = document.getElementById('forgot-btn');
+        btn.disabled = true;
+        btn.classList.add('opacity-60', 'cursor-not-allowed');
+        btn.classList.remove('hover:scale-[1.02]', 'active:scale-95');
+
+        let seconds = 5;
+        const tick = () => {
+            btn.innerHTML = `Veuillez patienter... (${seconds}s) <span class="material-symbols-outlined">hourglass_empty</span>`;
+            if (seconds-- <= 0) {
+                clearInterval(timer);
+                btn.disabled = false;
+                btn.classList.remove('opacity-60', 'cursor-not-allowed');
+                btn.classList.add('hover:scale-[1.02]', 'active:scale-95');
+                btn.innerHTML = `Envoyer le code <span class="material-symbols-outlined">send</span>`;
+            }
+        };
+        tick();
+        const timer = setInterval(tick, 1000);
+    });
+</script>
 </body>
 </html>

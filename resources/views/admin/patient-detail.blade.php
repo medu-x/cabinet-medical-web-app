@@ -57,7 +57,7 @@
             <span class="material-symbols-outlined">dashboard</span> Dashboard
         </a>
         <a href="{{ route('admin.patients') }}"
-           class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-teal-700 border-r-4 border-teal-600 bg-teal-50/50 rounded-xl transition-all duration-200">
+           class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-teal-700 bg-teal-50/50 rounded-xl transition-all duration-200">
             <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">group</span> Patients
         </a>
         <a href="{{ route('admin.secrataires') }}"

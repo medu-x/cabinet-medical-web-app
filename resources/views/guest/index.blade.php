@@ -135,7 +135,7 @@
                     Votre santé, <br /><span class="text-primary">notre priorité</span>.
                 </h1>
                 <p class="text-lg text-on-surface-variant max-w-xl leading-relaxed">
-                    Une approche éditoriale de la médecine moderne. Alliant expertise clinique de pointe et confort d'un environnement serein pour votre bien-être total.
+                   Une approche éditoriale de la médecine moderne. Elle combine une expertise clinique de haut niveau et le confort d'un environnement calme pour votre bien-être total.
                 </p>
                 <div class="flex flex-wrap gap-4">
                     <a class="bg-gradient-to-br from-primary to-primary-container text-white px-8 py-4 rounded-xl font-bold clinical-shadow hover:opacity-90 transition-all" href="{{ url('/dashboard')}}">
@@ -252,14 +252,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex gap-4">
-                    <a class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-teal-500 hover:text-white transition-all" href="#">
-                        <span class="material-symbols-outlined text-lg">share</span>
-                    </a>
-                    <a class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-teal-500 hover:text-white transition-all" href="#">
-                        <span class="material-symbols-outlined text-lg">mail</span>
-                    </a>
-                </div>
+
             </div>
             <div class="space-y-8">
                 <div class="bg-slate-800/50 p-8 rounded-3xl border border-slate-700/50">

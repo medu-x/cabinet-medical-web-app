@@ -388,6 +388,7 @@
                             @endphp
 
                             <button
+                                id="confirm-rdv-btn"
                                 type="submit"
                                 {{ !$canSubmit ? 'disabled' : '' }}
                                 class="w-full py-4 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white font-bold text-lg shadow-lg shadow-primary/20 flex items-center justify-center gap-2
@@ -412,6 +413,32 @@
             </div>
         </aside>
     </main>
+    <script>
+        const rdvForm = document.querySelector('form[action="{{ route('rendezvous.store') }}"]');
+        if (rdvForm) {
+            rdvForm.addEventListener('submit', function () {
+                const btn = document.getElementById('confirm-rdv-btn');
+                if (btn.disabled) return;
+                btn.disabled = true;
+                btn.classList.add('opacity-60', 'cursor-not-allowed');
+                btn.classList.remove('hover:scale-[1.02]');
+
+                let seconds = 5;
+                const tick = () => {
+                    btn.innerHTML = `<span>Veuillez patienter... (${seconds}s)</span><span class="material-symbols-outlined">hourglass_empty</span>`;
+                    if (seconds-- <= 0) {
+                        clearInterval(timer);
+                        btn.disabled = false;
+                        btn.classList.remove('opacity-60', 'cursor-not-allowed');
+                        btn.classList.add('hover:scale-[1.02]');
+                        btn.innerHTML = `<span>Confirmer le Rendez-vous</span><span class="material-symbols-outlined">arrow_forward</span>`;
+                    }
+                };
+                tick();
+                const timer = setInterval(tick, 1000);
+            });
+        }
+    </script>
     <!-- Footer -->
     <footer class="w-full py-6 mt-auto bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center px-8">
         <div class="text-xs font-inter text-slate-500 mb-4 md:mb-0">

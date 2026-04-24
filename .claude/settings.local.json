@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(xargs sed *)"
+      "Bash(xargs sed *)",
+      "Bash(php artisan *)",
+      "Bash(php -v)",
+      "Bash(where php *)",
+      "Bash(dir \"C:\\\\laragon\\\\bin\\\\php\\\\\" /B 2>&1 || dir \"C:\\\\xampp\\\\php\\\\\" /B)",
+      "Bash(C:\\\\Users\\\\dell\\\\.config\\\\herd\\\\bin\\\\php.bat -v)",
+      "Bash(powershell -Command \"& 'C:\\\\Users\\\\dell\\\\.config\\\\herd\\\\bin\\\\php84\\\\php.exe' -v\")"
     ]
   }
 }

@@ -64,7 +64,7 @@
             <span class="material-symbols-outlined mr-3">recent_patient</span>
             Gestion Patients
         </a>
-        <a class="flex items-center px-6 py-3 text-sm font-medium tracking-wide text-teal-700 border-r-4 border-teal-600 bg-teal-50/50 transition-all duration-200" href="{{ route('secretary.rendezvous') }}">
+        <a class="flex items-center px-6 py-3 text-sm font-medium tracking-wide text-teal-700 bg-teal-50/50 rounded-xl transition-all duration-200" href="{{ route('secretary.rendezvous') }}">
             <span class="material-symbols-outlined mr-3">calendar_month</span>
             Rendez-vous
         </a>
@@ -285,21 +285,12 @@
             @csrf
             <div class="grid grid-cols-2 gap-6">
                 <div class="col-span-2">
-                    <label class="block text-[11px] font-bold text-slate-500 mb-2">Sélectionner Patient</label>
-                    <select name="patient_id" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20">
-                        <option value="">Choisir un patient</option>
-                        @foreach ($patients as $patient)
-                            <option value="{{ $patient->id }}" @selected(old('patient_id') == $patient->id)>
-                                {{ $patient->user->name ?? 'Patient inconnu' }} - {{ $patient->cin }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('patient_id')
+                    <label class="block text-[11px] font-bold text-slate-500 mb-2">CIN du patient</label>
+                    <input type="text" name="cin" value="{{ old('cin') }}" placeholder="Ex: AB123456"
+                           class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20 uppercase">
+                    @error('cin')
                         <p class="mt-2 text-xs font-medium text-red-600">{{ $message }}</p>
                     @enderror
-                    @if ($patients->isEmpty())
-                        <p class="mt-2 text-xs font-medium text-orange-600">Aucun patient disponible pour l'instant.</p>
-                    @endif
                 </div>
 
                 <div class="col-span-2">
@@ -377,7 +368,7 @@
                 <button type="button" onclick="document.getElementById('modal-add-rdv').classList.add('hidden')" class="px-6 py-2.5 rounded-xl font-bold text-sm text-slate-500 hover:bg-slate-100">
                     Annuler
                 </button>
-                <button type="submit" @disabled($patients->isEmpty() || $medecins->isEmpty()) class="cta-gradient text-white px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                <button type="submit" @disabled($medecins->isEmpty()) class="cta-gradient text-white px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                     Planifier
                 </button>
             </div>
