@@ -259,7 +259,7 @@
         </section>
     </main>
     <footer class="w-full py-6 mt-auto bg-white border-t border-slate-200 flex flex-col md:flex-row justify-between items-center px-8 gap-4">
-        <p class="text-xs text-slate-500">© 2024 Cabinet Médical. Tous droits réservés.</p>
+        <p class="text-xs text-slate-500">© 2026 Cabinet Médical. Tous droits réservés.</p>
         <div class="flex items-center gap-6">
             <a href="#" class="text-xs text-slate-400 hover:text-primary transition-colors">Politique de confidentialité</a>
             <a href="#" class="text-xs text-slate-400 hover:text-primary transition-colors">Conditions d'utilisation</a>

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Cabinet Médical - Inscription</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
@@ -79,7 +79,7 @@
             },
         }
     </script>
-    
+
     <style>
         .glass-card {
             background: rgba(255, 255, 255, 0.1);
@@ -146,10 +146,13 @@
                 </div>
             </div>
             <!-- Floating Badge Card (Creative North Star Asymmetry) -->
-            
+
         </section>
         <!-- Right Side: Registration Form -->
-        <section class="w-full md:w-7/12 p-5 md:p-8 flex flex-col justify-center bg-surface-container-lowest">
+        <section class="w-full md:w-7/12 p-5 md:p-8 flex flex-col justify-center bg-surface-container-lowest relative">
+            <a href="{{ url('/') }}" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Retour à l'accueil">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </a>
             <div class="max-w-sm mx-auto w-full">
                 <header class="mb-6">
                     <h2 class="text-2xl font-bold text-on-surface mb-2">Créer un compte</h2>
@@ -184,8 +187,8 @@
                             <input class="w-full pl-12 pr-4 py-3 bg-surface-container-low rounded-xl border-none ring-1 ring-outline/10 focus:ring-2 focus:ring-primary transition-all placeholder:text-outline/50" id="email" name="email" placeholder="nom@exemple.com" required type="email" value="{{ old('email') }}" />
                         </div>
                     </div>
-                   
-                   
+
+
 
                     {{-- CIN + Phone (2 columns) --}}
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -262,16 +265,7 @@
             </div>
         </section>
     </main>
-    <!-- Content Footer (Legal) -->
-    <footer class="fixed bottom-4 left-0 right-0 hidden md:block">
-        <div class="max-w-6xl mx-auto px-8 flex justify-between items-center text-[10px] uppercase tracking-widest text-on-surface-variant opacity-40 font-bold">
-            <span>© 2024 CABINET MÉDICAL</span>
-            <div class="flex gap-4">
-                <span>POLITIQUE DE CONFIDENTIALITÉ</span>
-                <span>MENTIONS LÉGALES</span>
-            </div>
-        </div>
-    </footer>
+  
 </body>
 
 </html>

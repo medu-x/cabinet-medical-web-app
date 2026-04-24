@@ -256,21 +256,18 @@
                             </div>
                         </div>
 
-                        {{-- Ordonnances --}}
-                        @if($consultation->ordonnances->isNotEmpty())
+                        {{-- Ordonnance --}}
+                        @if($consultation->ordonnance && $consultation->ordonnance->prescriptions->isNotEmpty())
                         <div>
                             <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-3 flex items-center gap-1">
                                 <span class="material-symbols-outlined text-[14px] text-primary">prescriptions</span>
-                                Ordonnance ({{ $consultation->ordonnances->count() }} médicament(s))
+                                Ordonnance ({{ $consultation->ordonnance->prescriptions->count() }} médicament(s))
                             </p>
                             <div class="flex flex-wrap gap-2">
-                                @foreach($consultation->ordonnances as $ord)
+                                @foreach($consultation->ordonnance->prescriptions as $presc)
                                 <div class="bg-teal-50 border border-teal-100 rounded-xl px-4 py-2">
-                                    <p class="text-xs font-bold text-teal-900">{{ $ord->medicament }}</p>
-                                    <p class="text-[10px] text-teal-700">{{ $ord->posologie }} — {{ $ord->frequence }}</p>
-                                    @if($ord->notes)
-                                        <p class="text-[10px] text-slate-500 mt-0.5">{{ $ord->notes }}</p>
-                                    @endif
+                                    <p class="text-xs font-bold text-teal-900">{{ $presc->medicament }}</p>
+                                    <p class="text-[10px] text-teal-700">{{ $presc->dosage }} — {{ $presc->frequence }}</p>
                                 </div>
                                 @endforeach
                             </div>
@@ -353,7 +350,7 @@
 
     {{-- Footer --}}
     <footer class="w-full py-6 mt-8 bg-white border-t border-slate-200 flex flex-col md:flex-row justify-between items-center px-8">
-        <div class="text-xs text-slate-500 mb-4 md:mb-0">© 2024 Cabinet Médical. Tous droits réservés.</div>
+        <div class="text-xs text-slate-500 mb-4 md:mb-0">© 2026 Cabinet Médical. Tous droits réservés.</div>
         <div class="flex gap-6">
             <a class="text-xs text-slate-500 hover:text-teal-500 transition-colors" href="#">Politique de confidentialité</a>
             <a class="text-xs text-slate-500 hover:text-teal-500 transition-colors" href="#">Conditions d'utilisation</a>

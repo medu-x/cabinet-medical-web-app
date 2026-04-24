@@ -310,7 +310,7 @@
         </section>
         <!-- Footer -->
         <footer class="w-full py-6 mt-auto bg-white border-t border-slate-200 flex flex-col md:flex-row justify-between items-center px-8">
-            <div class="text-xs text-slate-500 mb-4 md:mb-0">© 2024 Cabinet Médical. Tous droits réservés.</div>
+            <div class="text-xs text-slate-500 mb-4 md:mb-0">© 2026 Cabinet Médical. Tous droits réservés.</div>
             <div class="flex gap-6">
                 <a class="text-xs text-slate-500 hover:text-teal-500 transition-colors" href="#">Politique de confidentialité</a>
                 <a class="text-xs text-slate-500 hover:text-teal-500 transition-colors" href="#">Conditions d'utilisation</a>

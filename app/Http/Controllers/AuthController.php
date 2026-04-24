@@ -8,13 +8,12 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Patient;
 use App\Models\DossierMedical;
+use App\Mail\EmailVerificationMail;
+use Illuminate\Support\Facades\Mail;
 use RuntimeException;
 
 class AuthController extends Controller
 {
-    // ==========================================
-    // REGISTER
-    // ==========================================
 
     /**
      * Show the registration form (GET /register)
@@ -72,18 +71,24 @@ class AuthController extends Controller
             'antecedents'    => null,
         ]);
 
-        // STEP 3: Log the user in immediately after registration
-        // This creates a session — the user won't need to go to the login page
-        Auth::login($user);
+        // STEP 3: Generate a 6-digit verification code and send it by email
+        $code   = random_int(100000, 999999);
+        $expiry = now()->addMinutes(10)->format('Y-m-d H:i:s');
 
-        // STEP 4: Redirect to the dashboard
-        // route('dashboard') generates the URL from the route name (we'll define it later)
-        return redirect()->route('dashboard');
+        $user->update([
+            'email_verification_token' => $code . '|' . $expiry,
+        ]);
+
+        Mail::to($user->email)->send(new EmailVerificationMail((string) $code, $user->name));
+
+        // Store email in session so the verification page knows who to verify
+        session(['verify_email' => $user->email]);
+
+        // STEP 4: Redirect to the email verification page (not logged in yet)
+        return redirect()->route('email.verify.form')
+            ->with('success', 'Un code de vérification a été envoyé à ' . $user->email);
     }
 
-    // ==========================================
-    // LOGIN
-    // ==========================================
 
     /**
      * Show the login form (GET /login)
@@ -154,9 +159,6 @@ class AuthController extends Controller
 
 
 
-    // ==========================================
-    // LOGOUT
-    // ==========================================
 
     /**
      * Log the user out (POST /logout)

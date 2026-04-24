@@ -115,6 +115,20 @@
 
     <!-- Main Content -->
     <main class="flex-grow max-w-6xl w-full mx-auto px-4 py-8 md:py-12">
+
+        @if(session('success'))
+            <div class="mb-6 flex items-center gap-3 bg-teal-50 border border-teal-200 text-teal-800 px-5 py-4 rounded-2xl text-sm font-semibold">
+                <span class="material-symbols-outlined text-teal-600">check_circle</span>
+                {{ session('success') }}
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="mb-6 flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-2xl text-sm font-semibold">
+                <span class="material-symbols-outlined text-red-500">error</span>
+                {{ session('error') }}
+            </div>
+        @endif
+
         <!-- Breadcrumb & Header -->
         <div class="mb-10">
             <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
@@ -191,9 +205,20 @@
                                             @endif
                                         </td>
                                         <td class="p-5 pr-8 text-right">
-                                            <a href="{{ route('rendezvous.confirmation', $rdv->id) }}" class="inline-flex items-center gap-1 text-[#007B88] text-sm font-bold hover:underline">
-                                                Voir <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
-                                            </a>
+                                            <div class="flex items-center justify-end gap-3">
+                                                <a href="{{ route('rendezvous.confirmation', $rdv->id) }}" class="inline-flex items-center gap-1 text-[#007B88] text-sm font-bold hover:underline">
+                                                    Voir <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                                                </a>
+                                                <form method="POST" action="{{ route('patient.rendezvous.cancel', $rdv->id) }}"
+                                                      onsubmit="return confirm('Êtes-vous sûr de vouloir annuler ce rendez-vous ?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 text-red-600 border border-red-200 text-xs font-bold hover:bg-red-100 hover:border-red-300 transition-all">
+                                                        <span class="material-symbols-outlined text-[15px]">cancel</span>
+                                                        Annuler
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -279,7 +304,7 @@
     <!-- Footer -->
     <footer class="w-full py-6 mt-auto bg-white border-t border-slate-200 flex flex-col md:flex-row justify-between items-center px-8">
         <div class="text-xs font-inter text-slate-500 mb-4 md:mb-0">
-            © 2024 Cabinet Médical. Tous droits réservés.
+            © 2026 Cabinet Médical. Tous droits réservés.
         </div>
         <div class="flex gap-6">
             <a class="text-xs font-inter text-slate-500 hover:text-teal-500 transition-colors" href="#">Politique de confidentialité</a>

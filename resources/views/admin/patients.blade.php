@@ -79,18 +79,21 @@
 
     {{-- Top bar --}}
     <header class="w-full sticky top-0 z-30 bg-white/80 backdrop-blur-xl shadow-sm border-b border-slate-100 flex items-center justify-between px-8 py-3">
-        <div class="flex items-center flex-1 max-w-md">
+        <form method="GET" action="{{ route('admin.patients') }}" class="flex items-center flex-1 max-w-md">
             <div class="relative w-full">
                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-                <input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400"
-                       placeholder="Rechercher un patient..." type="text"/>
+                <input name="search" value="{{ $search }}"
+                       class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400"
+                       placeholder="Rechercher par nom, CIN, email..." type="text"
+                       oninput="clearDebounce(this)"/>
             </div>
-        </div>
+        </form>
         <div class="flex items-center gap-3">
             <div class="text-right">
                 <p class="text-sm font-bold text-teal-800">{{ Auth::user()->name }}</p>
                 <p class="text-[10px] text-slate-500">Super Admin</p>
             </div>
+            <img src="{{ Auth::user()->photo_url }}" class="w-10 h-10 rounded-full object-cover ring-2 ring-teal-50" alt="">
         </div>
     </header>
 
@@ -216,7 +219,7 @@
 
     {{-- Footer --}}
     <footer class="w-full py-6 bg-white border-t border-slate-200 flex flex-col md:flex-row justify-between items-center px-8">
-        <div class="text-xs text-slate-500 mb-4 md:mb-0">© 2024 Cabinet Médical. Tous droits réservés.</div>
+        <div class="text-xs text-slate-500 mb-4 md:mb-0">© 2026 Cabinet Médical. Tous droits réservés.</div>
         <div class="flex gap-6">
             <a class="text-xs text-slate-500 hover:text-teal-500 transition-colors" href="#">Politique de confidentialité</a>
             <a class="text-xs text-slate-500 hover:text-teal-500 transition-colors" href="#">Conditions d'utilisation</a>
@@ -334,6 +337,14 @@
 </div>
 
 <script>
+    let _debounceTimer = null;
+    function clearDebounce(input) {
+        clearTimeout(_debounceTimer);
+        _debounceTimer = setTimeout(function () {
+            input.closest('form').submit();
+        }, 400);
+    }
+
     function openAddModal() {
         document.getElementById('modal-add-patient').classList.remove('hidden');
         document.getElementById('modal-add-patient').classList.add('flex');

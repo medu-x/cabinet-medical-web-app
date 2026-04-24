@@ -14,10 +14,7 @@ return new class extends Migration
         Schema::create('ordonnances', function (Blueprint $table) {
             $table->id();
             $table->foreignId('consultation_id')->constrained('consultations')->onDelete('cascade');
-            $table->string('medicament');
-            $table->string('posologie');
-            $table->string('frequence');
-            $table->text('notes')->nullable();
+            $table->date('date')->nullable();
             $table->timestamps();
         });
     }

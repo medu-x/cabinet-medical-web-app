@@ -401,8 +401,8 @@
         <div class="contact-strip">
             <table class="contact-table">
                 <tr>
-                    <td style="text-align: center;"><span>123 Rue de la Santé, Guéliz</span></td>
-                    <td style="text-align: center;"><span>+212 524 00 00 00</span></td>
+                    <td style="text-align: center;"><span>123 Rue de Hassan 2, Guéliz, Marrakech</span></td>
+                    <td style="text-align: center;"><span>+212 641 371 472</span></td>
                     <td style="text-align: center;"><span>contact@cabinet-medical.ma</span></td>
                 </tr>
             </table>

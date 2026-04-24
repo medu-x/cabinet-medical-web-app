@@ -335,7 +335,7 @@
                     <div class="col-span-5 h-full bg-surface-container-lowest rounded-2xl p-6 shadow-sm border border-outline-variant/10 flex flex-col overflow-hidden">
                         <h4 class="font-bold text-on-surface flex items-center gap-2 mb-6">
                             <span class="material-symbols-outlined text-primary">prescriptions</span>
-                            Ordonnance Numérique
+                            Médicaments
                         </h4>
 
                         {{-- liste medicaments vide au debut - le doctor ajoute via le bouton + --}}
@@ -357,13 +357,6 @@
                             Ajouter un médicament
                         </button>
 
-                        {{-- footer toujours visible en bas : imprimer --}}
-                        <div class="mt-4 pt-4 border-t border-outline-variant/10 flex justify-start items-center shrink-0">
-                            <button type="button" class="text-primary text-sm font-bold flex items-center gap-1 hover:text-primary/70 transition-colors">
-                                <span class="material-symbols-outlined">print</span>
-                                Imprimer
-                            </button>
-                        </div>
                     </div>
 
                 </form>{{-- end #panel-consultation --}}
@@ -563,8 +556,8 @@
                             class="w-full bg-surface-container-lowest border-0 rounded-lg text-sm font-semibold py-1.5 px-3 focus:ring-1 focus:ring-primary/30" />
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-on-surface-variant uppercase mb-1 block">Posologie</label>
-                        <input type="text" name="medicaments[${index}][posologie]" placeholder="1 gélule"
+                        <label class="text-[10px] font-bold text-on-surface-variant uppercase mb-1 block">Dosage</label>
+                        <input type="text" name="medicaments[${index}][dosage]" placeholder="500mg"
                             class="w-full bg-surface-container-lowest border-0 rounded-lg text-sm py-1.5 px-3 focus:ring-1 focus:ring-primary/30" />
                     </div>
                     <div>
@@ -573,8 +566,8 @@
                             class="w-full bg-surface-container-lowest border-0 rounded-lg text-sm py-1.5 px-3 focus:ring-1 focus:ring-primary/30" />
                     </div>
                     <div class="col-span-2">
-                        <label class="text-[10px] font-bold text-on-surface-variant uppercase mb-1 block">Notes</label>
-                        <input type="text" name="medicaments[${index}][notes]" placeholder="Ex: Prendre avec repas, eviter le soleil..."
+                        <label class="text-[10px] font-bold text-on-surface-variant uppercase mb-1 block">Instructions</label>
+                        <input type="text" name="medicaments[${index}][instructions]" placeholder="Ex: À prendre après le repas..."
                             class="w-full bg-surface-container-lowest border-0 rounded-lg text-sm py-1.5 px-3 focus:ring-1 focus:ring-primary/30" />
                     </div>
                 </div>`;

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('commentaire')->nullable();
             $table->timestamps();
 
-            
+
             $table->unique('rendez_vous_id');
         });
     }

@@ -14,8 +14,6 @@ use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
-    // ─── DASHBOARD ────────────────────────────────────────────────────────────
-
     public function dashboard(Request $request)
     {
         $availableYears = collect([2026, 2025]);
@@ -91,12 +89,23 @@ class AdminController extends Controller
         ));
     }
 
-    // ─── PATIENTS ─────────────────────────────────────────────────────────────
 
-    public function patients()
+    public function patients(Request $request)
     {
-        $patients = Patient::with('user')->latest()->paginate(15);
-        return view('admin.patients', compact('patients'));
+        $search = trim($request->query('search', ''));
+        $query = Patient::with('user');
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('user', fn($u) => $u->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%"))
+                  ->orWhere('cin', 'like', "%{$search}%")
+                  ->orWhere('telephone', 'like', "%{$search}%");
+            });
+        }
+
+        $patients = $query->latest()->paginate(15)->withQueryString();
+        return view('admin.patients', compact('patients', 'search'));
     }
 
     public function storePatient(Request $request)
@@ -162,7 +171,6 @@ class AdminController extends Controller
         return redirect()->route('admin.patients')->with('success', 'Patient modifié avec succès.');
     }
 
-    // ─── SECRÉTAIRES ──────────────────────────────────────────────────────────
 
     public function secretaires()
     {
@@ -227,7 +235,6 @@ class AdminController extends Controller
         return redirect()->route('admin.secrataires')->with('success', 'Secrétaire modifiée avec succès.');
     }
 
-    // ─── MÉDECINS ─────────────────────────────────────────────────────────────
 
     public function doctors()
     {
@@ -274,7 +281,7 @@ class AdminController extends Controller
         return redirect()->route('admin.doctors')->with('success', 'Médecin supprimé avec succès.');
     }
 
-    // ─── PATIENT DETAIL ───────────────────────────────────────────────────────
+
 
     public function patientDetail($id)
     {
@@ -285,7 +292,7 @@ class AdminController extends Controller
             ->orderBy('date_rendez_vous', 'desc')
             ->get();
 
-        $consultations = \App\Models\Consultation::with(['ordonnances', 'medecin.user', 'medecin.specialite'])
+        $consultations = \App\Models\Consultation::with(['ordonnance.prescriptions', 'medecin.user', 'medecin.specialite'])
             ->where('patient_id', $patient->id)
             ->orderBy('created_at', 'desc')
             ->get();

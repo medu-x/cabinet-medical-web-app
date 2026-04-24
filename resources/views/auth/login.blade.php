@@ -8,7 +8,7 @@
     <title>Cabinet Médical - Connexion</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
-    
+
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -143,19 +143,13 @@
                 </div>
             </div>
             <!-- Floating Badge Card -->
-            <div class="relative z-10 mt-6 glass-card p-4 rounded-2xl flex items-center gap-3">
-                <img alt="Portrait du Dr Martin Rousseau" class="w-12 h-12 rounded-full object-cover border-2 border-white/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFbjCStiG_XPEAtJM0q6CuqpJebap61-F0hcCdRXtvLf3aBiBVUgTtuSb3bmlJIQso8pR87DNO2Kp09uPq2pat2RK9odIhJBRc1Kp2gpAykhQf-pMdL8m1z_IOzEM1t3DhadyDeGc4OMkUzC-cok3wQQ1lf6ZEfpf7xqdGgP7hVzCU0klOVZECTylEY1023XLf8NhvxpgDe-VT7tJP6SQhUKJc6WFqH-JB9KBmeCi9mN0Nsh-FjLmlvB3Nid1DenubEuZjZGCYmVs" />
-                <div>
-                    <p class="text-sm font-medium">Dr. Mohamed Ouhammou</p>
-                    <div class="flex items-center gap-1">
-                        <span class="material-symbols-outlined text-yellow-400 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
-                        <span class="text-xs font-bold">4.9/5 satisfaction patient</span>
-                    </div>
-                </div>
-            </div>
+
         </section>
         <!-- Right Side: Login Form -->
-        <section class="w-full md:w-7/12 p-5 md:p-8 flex flex-col justify-center bg-surface-container-lowest">
+        <section class="w-full md:w-7/12 p-5 md:p-8 flex flex-col justify-center bg-surface-container-lowest relative">
+            <a href="{{ url('/') }}" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Retour à l'accueil">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </a>
             <div class="max-w-sm mx-auto w-full">
                 <header class="mb-6">
                     <h2 class="text-2xl font-bold text-on-surface mb-2">Se connecter</h2>
@@ -208,7 +202,7 @@
                             <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">login</span>
                         </button>
                     </div>
-                </form>    
+                </form>
                 <footer class="mt-10 text-center">
                     <p class="text-on-surface-variant text-sm">
                         Vous n'avez pas encore de compte ?
@@ -225,15 +219,7 @@
         </section>
     </main>
     <!-- Content Footer (Legal) -->
-    <footer class="fixed bottom-4 left-0 right-0 hidden md:block">
-        <div class="max-w-6xl mx-auto px-8 flex justify-between items-center text-[10px] uppercase tracking-widest text-on-surface-variant opacity-40 font-bold">
-            <span>© 2024 CABINET MÉDICAL</span>
-            <div class="flex gap-4">
-                <span>POLITIQUE DE CONFIDENTIALITÉ</span>
-                <span>MENTIONS LÉGALES</span>
-            </div>
-        </div>
-    </footer>
+    
 </body>
 
 </html>

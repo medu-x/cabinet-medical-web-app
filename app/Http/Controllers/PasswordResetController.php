@@ -10,13 +10,11 @@ use Illuminate\Support\Facades\Mail;
 
 class PasswordResetController extends Controller
 {
-    // ── Step 1: Show email form ──────────────────────────────────────────
     public function showRequestForm()
     {
         return view('auth.forgot-password');
     }
 
-    // ── Step 2: Generate code, save to user, send email ─────────────────
     public function sendCode(Request $request)
     {
         $request->validate([
@@ -46,7 +44,6 @@ class PasswordResetController extends Controller
             ->with('success', 'Un code à 6 chiffres a été envoyé à ' . $user->email);
     }
 
-    // ── Step 3: Show code verification form ────────────────────────────
     public function showVerifyForm()
     {
         // Guard: must have come from sendCode step
@@ -57,7 +54,6 @@ class PasswordResetController extends Controller
         return view('auth.verify-code');
     }
 
-    // ── Step 3b: Resend a fresh code using the email already in session ──
     public function resendCode()
     {
         $email = session('reset_email');
@@ -88,7 +84,6 @@ class PasswordResetController extends Controller
             ->with('success', 'Un nouveau code a été envoyé à ' . $email);
     }
 
-    // ── Step 4: Verify the code ─────────────────────────────────────────
     public function verifyCode(Request $request)
     {
         $request->validate([
@@ -127,7 +122,6 @@ class PasswordResetController extends Controller
         return redirect()->route('password.reset');
     }
 
-    // ── Step 5: Show new password form ──────────────────────────────────
     public function showResetForm()
     {
         if (! session('reset_email') || ! session('reset_verified')) {
@@ -137,7 +131,6 @@ class PasswordResetController extends Controller
         return view('auth.reset-password');
     }
 
-    // ── Step 6: Save new password ────────────────────────────────────────
     public function resetPassword(Request $request)
     {
         $request->validate([

@@ -56,6 +56,11 @@
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+        .star-btn { cursor: pointer; color: #cbd5e1; font-size: 28px; transition: color .15s; }
+        .star-btn.active, .star-btn:hover, .star-btn:hover ~ .star-btn { color: #f59e0b; }
+        .stars-row { display: flex; flex-direction: row-reverse; justify-content: flex-end; }
+        .stars-row .star-btn:hover,
+        .stars-row .star-btn:hover ~ .star-btn { color: #f59e0b; }
     </style>
 </head>
 <body class="bg-surface font-body text-on-surface antialiased min-h-screen flex flex-col">
@@ -96,6 +101,19 @@
     </nav>
 
     <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-8 md:py-12 space-y-8">
+
+        @if(session('success_avis'))
+            <div class="flex items-center gap-3 bg-teal-50 border border-teal-200 text-teal-800 px-5 py-4 rounded-2xl text-sm font-semibold">
+                <span class="material-symbols-outlined text-teal-600">check_circle</span>
+                {{ session('success_avis') }}
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-2xl text-sm font-semibold">
+                <span class="material-symbols-outlined text-red-500">error</span>
+                {{ session('error') }}
+            </div>
+        @endif
 
         {{-- Breadcrumb & Header --}}
         <header>
@@ -240,25 +258,76 @@
                             </div>
                         </div>
 
-                        @if($consultation->ordonnances->isNotEmpty())
-                        <div>
+                        @if($consultation->ordonnance && $consultation->ordonnance->prescriptions->isNotEmpty())
+                        <div class="mb-4">
                             <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-3 flex items-center gap-1">
                                 <span class="material-symbols-outlined text-[14px] text-primary">prescriptions</span>
-                                Ordonnance ({{ $consultation->ordonnances->count() }} médicament(s))
+                                Ordonnance ({{ $consultation->ordonnance->prescriptions->count() }} médicament(s))
                             </p>
                             <div class="flex flex-wrap gap-2">
-                                @foreach($consultation->ordonnances as $ord)
+                                @foreach($consultation->ordonnance->prescriptions as $presc)
                                 <div class="bg-teal-50 border border-teal-100 rounded-xl px-4 py-2">
-                                    <p class="text-xs font-bold text-teal-900">{{ $ord->medicament }}</p>
-                                    <p class="text-[10px] text-teal-700">{{ $ord->posologie }} — {{ $ord->frequence }}</p>
-                                    @if($ord->notes)
-                                        <p class="text-[10px] text-slate-500 mt-0.5">{{ $ord->notes }}</p>
-                                    @endif
+                                    <p class="text-xs font-bold text-teal-900">{{ $presc->medicament }}</p>
+                                    <p class="text-[10px] text-teal-700">{{ $presc->dosage }} — {{ $presc->frequence }}</p>
                                 </div>
                                 @endforeach
                             </div>
                         </div>
                         @endif
+
+                        {{-- ══ AVIS ══ --}}
+                        @php $avis = $consultation->rendezVous?->avis; @endphp
+                        <div class="mt-4 pt-4 border-t border-slate-100">
+                            @if($avis)
+                                <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-2 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[14px] text-amber-400" style="font-variation-settings:'FILL' 1;">star</span>
+                                    Votre avis
+                                </p>
+                                <div class="flex items-center gap-1 mb-1">
+                                    @for($s = 1; $s <= 5; $s++)
+                                        <span class="material-symbols-outlined text-[22px] {{ $s <= $avis->note ? 'text-amber-400' : 'text-slate-200' }}"
+                                              style="font-variation-settings:'FILL' 1;">star</span>
+                                    @endfor
+                                    <span class="ml-2 text-xs text-slate-500 font-semibold">{{ $avis->note }}/5</span>
+                                </div>
+                                @if($avis->commentaire)
+                                    <p class="text-sm text-slate-600 italic mt-1">"{{ $avis->commentaire }}"</p>
+                                @endif
+                            @else
+                                <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-3 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[14px] text-primary">rate_review</span>
+                                    Laisser un avis
+                                </p>
+                                <form method="POST" action="{{ route('patient.avis.store') }}" class="space-y-3">
+                                    @csrf
+                                    <input type="hidden" name="rendez_vous_id" value="{{ $consultation->rendez_vous_id }}">
+                                    <input type="hidden" name="note" id="note-{{ $consultation->id }}" value="">
+
+                                    {{-- Star picker --}}
+                                    <div class="flex items-center gap-1" id="stars-{{ $consultation->id }}">
+                                        @for($s = 1; $s <= 5; $s++)
+                                        <button type="button"
+                                            onclick="setNote({{ $consultation->id }}, {{ $s }})"
+                                            class="star-btn material-symbols-outlined"
+                                            style="font-variation-settings:'FILL' 0;"
+                                            data-value="{{ $s }}">star</button>
+                                        @endfor
+                                        <span class="ml-2 text-xs text-slate-400" id="note-label-{{ $consultation->id }}">Sélectionnez une note</span>
+                                    </div>
+
+                                    {{-- Commentaire --}}
+                                    <textarea name="commentaire" rows="2" placeholder="Commentaire (facultatif)..."
+                                        class="w-full bg-surface-container-low border border-outline-variant/20 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 focus:outline-none resize-none"></textarea>
+
+                                    <button type="submit"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2 bg-primary text-white text-xs font-bold rounded-xl hover:bg-primary/90 transition-all">
+                                        <span class="material-symbols-outlined text-[16px]">send</span>
+                                        Soumettre l'avis
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+
                     </div>
                     @endforeach
                 </div>
@@ -269,7 +338,7 @@
 
     <!-- Footer -->
     <footer class="w-full py-6 mt-auto bg-white border-t border-slate-200 flex flex-col md:flex-row justify-between items-center px-8">
-        <div class="text-xs text-slate-500 mb-4 md:mb-0">© 2024 Cabinet Médical. Tous droits réservés.</div>
+        <div class="text-xs text-slate-500 mb-4 md:mb-0">© 2026 Cabinet Médical. Tous droits réservés.</div>
         <div class="flex gap-6">
             <a class="text-xs text-slate-500 hover:text-teal-500 transition-colors" href="#">Politique de confidentialité</a>
             <a class="text-xs text-slate-500 hover:text-teal-500 transition-colors" href="#">Conditions d'utilisation</a>
@@ -277,5 +346,18 @@
         </div>
     </footer>
 
+    <script>
+        function setNote(consultationId, value) {
+            document.getElementById('note-' + consultationId).value = value;
+            const labels = ['', '1 — Mauvais', '2 — Moyen', '3 — Bien', '4 — Très bien', '5 — Excellent'];
+            document.getElementById('note-label-' + consultationId).textContent = labels[value];
+            const stars = document.querySelectorAll('#stars-' + consultationId + ' .star-btn');
+            stars.forEach(btn => {
+                const v = parseInt(btn.dataset.value);
+                btn.style.fontVariationSettings = v <= value ? "'FILL' 1" : "'FILL' 0";
+                btn.style.color = v <= value ? '#f59e0b' : '#cbd5e1';
+            });
+        }
+    </script>
 </body>
 </html>

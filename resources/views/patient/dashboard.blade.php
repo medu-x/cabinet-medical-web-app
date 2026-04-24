@@ -254,14 +254,29 @@
                     </div>
                     <script>
                         function updateDate(date) {
+                            const d = new Date(date + 'T00:00:00');
+                            const day = d.getDay(); // 0=Sun, 6=Sat
+                            if (day === 0 || day === 6) {
+                                document.getElementById('closed-weekend-msg').classList.remove('hidden');
+                                document.getElementById('date-picker').value = '{{ $selectedDate }}';
+                                return;
+                            }
+                            document.getElementById('closed-weekend-msg').classList.add('hidden');
                             const url = new URL(window.location.href);
                             url.searchParams.set('date', date);
-                            // Reset selected hour when date changes
                             url.searchParams.delete('heure');
                             window.location.href = url.toString();
                         }
                     </script>
-                    @if ($slots->isEmpty())
+                    <div id="closed-weekend-msg" class="hidden mt-3 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs font-semibold">
+                        Le cabinet est fermé le week-end. Veuillez choisir un jour du lundi au vendredi.
+                    </div>
+                    @php $isWeekend = in_array(\Carbon\Carbon::parse($selectedDate)->dayOfWeek, [0, 6]); @endphp
+                    @if ($isWeekend)
+                    <div class="mt-4 px-4 py-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-semibold text-center">
+                        Le cabinet est fermé le week-end. Veuillez sélectionner un jour du lundi au vendredi.
+                    </div>
+                    @elseif ($slots->isEmpty())
                     <div class="mx-auto w-fit px-3 py-1 bg-primary/10 text-primary text-xs font-bold whitespace-nowrap rounded-lg">
                         Choisissez un médecin pour voir les horaires disponibles.
                     </div>
@@ -400,7 +415,7 @@
     <!-- Footer -->
     <footer class="w-full py-6 mt-auto bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center px-8">
         <div class="text-xs font-inter text-slate-500 mb-4 md:mb-0">
-            © 2024 Cabinet Médical. All rights reserved.
+            © 2026 Cabinet Médical. All rights reserved.
         </div>
         <div class="flex gap-6">
             <a class="text-xs font-inter text-slate-500 hover:text-teal-500 transition-colors" href="#">Privacy Policy</a>

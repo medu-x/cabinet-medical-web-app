@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\RendezVousController;
 use App\Http\Controllers\PasswordResetController;
@@ -22,6 +23,11 @@ Route::get('/', function () {
 
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
+// Email verification
+Route::get('/verify-email',         [EmailVerificationController::class, 'showVerifyForm'])->name('email.verify.form');
+Route::post('/verify-email',        [EmailVerificationController::class, 'verifyCode'])->name('email.verify.submit');
+Route::get('/verify-email/resend',  [EmailVerificationController::class, 'resendCode'])->name('email.verify.resend');
+
 
 Route::get('/dashboard', function () {
     $user = Auth::user();
@@ -36,15 +42,15 @@ Route::get('/dashboard', function () {
 
 Route::get('/patient/dashboard', [PatientController::class, 'dashboard'])
     ->name('patient.dashboard')
-    ->middleware(['auth','role:patient']);
+    ->middleware(['auth','verified','role:patient']);
 
 Route::get('/patient/mes-rendez-vous', [PatientController::class, 'rendezVousIndex'])
     ->name('patient.rendezvous.index')
-    ->middleware(['auth','role:patient']);
+    ->middleware(['auth','verified','role:patient']);
 
 Route::get('/patient/profil', [PatientController::class, 'profil'])
     ->name('patient.profil')
-    ->middleware(['auth','role:patient']);
+    ->middleware(['auth','verified','role:patient']);
 
 
 
@@ -139,3 +145,15 @@ Route::post('/doctor/consultation', [MedecinController::class, 'storeConsultatio
 Route::patch('/doctor/dossier/{patientId}', [MedecinController::class, 'updateDossier'])
     ->name('doctor.dossier.update')
     ->middleware(['auth','role:doctor']);
+
+Route::get('/doctor/ordonnance/{id}/print', [MedecinController::class, 'printOrdonnance'])
+    ->name('doctor.ordonnance.print')
+    ->middleware(['auth','role:doctor']);
+
+Route::delete('/patient/rendez-vous/{id}', [PatientController::class, 'cancelRendezVous'])
+    ->name('patient.rendezvous.cancel')
+    ->middleware(['auth','role:patient']);
+
+Route::post('/patient/avis', [PatientController::class, 'storeAvis'])
+    ->name('patient.avis.store')
+    ->middleware(['auth','role:patient']);

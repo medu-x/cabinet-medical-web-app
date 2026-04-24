@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\DossierMedical;
 use App\Models\Consultation;
+use App\Models\Ordonnance;
 use App\Models\RendezVous;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class MedecinController extends Controller
 {
@@ -16,14 +18,12 @@ class MedecinController extends Controller
 
         $rendezVousDuJourConfirmed = $user->medecin->rendezVousDuJourConfirmed();
 
-        // RDV actif : depuis ?rdv= dans l'URL, sinon le premier de la file
         $activeRdvId = $request->query('rdv');
 
         $activeRdv = $activeRdvId
             ? $rendezVousDuJourConfirmed->firstWhere('id', $activeRdvId)
             : $rendezVousDuJourConfirmed->first();
 
-        // Charger le dossier médical du patient actif si disponible
         if ($activeRdv) {
             $activeRdv->patient->load('dossierMedical');
         }
@@ -39,7 +39,6 @@ class MedecinController extends Controller
             'antecedents'    => 'nullable|string',
         ]);
 
-        // firstOrCreate guarantees that if a dossier doesn't exist, it makes an empty one first!
         $dossier = DossierMedical::firstOrCreate(['patient_id' => $patientId]);
         $dossier->update($validated);
 
@@ -49,52 +48,72 @@ class MedecinController extends Controller
     public function storeConsultation(Request $request)
     {
         $validated = $request->validate([
-            'rendez_vous_id' => 'required|exists:rendez_vous,id',
-            'motif' => 'required|string',
-            'diagnostic' => 'required|string',
-            'notes' => 'nullable|string',
-            'rapport_medical' => 'required|string',
-            'medicaments' => 'nullable|array',
+            'rendez_vous_id'           => 'required|exists:rendez_vous,id',
+            'motif'                    => 'required|string',
+            'diagnostic'               => 'required|string',
+            'notes'                    => 'nullable|string',
+            'rapport_medical'          => 'required|string',
+            'medicaments'              => 'nullable|array',
             'medicaments.*.medicament' => 'required_with:medicaments|string',
-            'medicaments.*.posologie' => 'required_with:medicaments|string',
-            'medicaments.*.frequence' => 'required_with:medicaments|string',
-            'medicaments.*.notes' => 'nullable|string',
+            'medicaments.*.dosage'     => 'required_with:medicaments|string',
+            'medicaments.*.frequence'     => 'required_with:medicaments|string',
+            'medicaments.*.instructions'  => 'nullable|string',
         ]);
 
-        $user = Auth::user();
+        $user       = Auth::user();
         $rendezVous = RendezVous::findOrFail($validated['rendez_vous_id']);
 
-        // Check if a consultation already exists for this RDV
         if (Consultation::where('rendez_vous_id', $rendezVous->id)->exists()) {
             return back()->with('error', 'Une consultation existe déjà pour ce rendez-vous.');
         }
 
-        // 1. Create Consultation
         $consultation = Consultation::create([
-            'rendez_vous_id' => $rendezVous->id,
-            'patient_id' => $rendezVous->patient_id,
-            'medecin_id' => $user->medecin->id,
-            'motif' => $validated['motif'],
-            'diagnostic' => $validated['diagnostic'],
-            'rapport_medical' => $validated['rapport_medical'] . "\n\nNotes de consultation: " . ($validated['notes'] ?? ''),
-            'statut' => 'termine'
+            'rendez_vous_id'  => $rendezVous->id,
+            'patient_id'      => $rendezVous->patient_id,
+            'medecin_id'      => $user->medecin->id,
+            'motif'           => $validated['motif'],
+            'diagnostic'      => $validated['diagnostic'],
+            'rapport_medical' => $validated['rapport_medical'] . (isset($validated['notes']) ? "\n\nNotes: " . $validated['notes'] : ''),
+            'statut'          => 'termine',
         ]);
 
-        // 2. Create Ordonnances if any medicaments added
+        $ordonnance = null;
         if (!empty($validated['medicaments'])) {
+            $ordonnance = $consultation->ordonnances()->create([
+                'date' => now()->toDateString(),
+            ]);
+
             foreach ($validated['medicaments'] as $med) {
-                $consultation->ordonnances()->create([
-                    'medicament' => $med['medicament'],
-                    'posologie' => $med['posologie'],
-                    'frequence' => $med['frequence'],
-                    'notes' => $med['notes'] ?? null,
+                $ordonnance->prescriptions()->create([
+                    'medicament'   => $med['medicament'],
+                    'dosage'       => $med['dosage'],
+                    'frequence'    => $med['frequence'],
+                    'instructions' => $med['instructions'] ?? null,
                 ]);
             }
         }
 
-        // 3. Update RendezVous Status
         $rendezVous->update(['statut' => 'termine']);
 
+        if ($ordonnance) {
+            return redirect()->route('doctor.ordonnance.print', $ordonnance->id);
+        }
+
         return back()->with('success_consultation', 'Consultation terminée et enregistrée avec succès !');
+    }
+
+    public function printOrdonnance($id)
+    {
+        $ordonnance = Ordonnance::with([
+            'prescriptions',
+            'consultation.patient.user',
+            'consultation.medecin.user',
+            'consultation.medecin.specialite',
+        ])->findOrFail($id);
+
+        $pdf = Pdf::loadView('doctor.ordonnance-print', compact('ordonnance'))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->stream('ordonnance-' . $ordonnance->id . '.pdf');
     }
 }

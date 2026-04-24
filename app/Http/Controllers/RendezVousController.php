@@ -92,6 +92,27 @@ class RendezVousController extends Controller
             'heure_rendez_vous' => ['required'],
         ]);
 
+        $slotDateTime = \Carbon\Carbon::parse($request->date_rendez_vous . ' ' . $request->heure_rendez_vous);
+
+        // Reject past or within 60-min slots
+        if (now()->diffInMinutes($slotDateTime, false) < 60) {
+            return back()->with('error', 'Impossible de réserver un créneau dans moins de 60 minutes ou dans le passé.');
+        }
+
+        // Reject weekends (Saturday and Sunday)
+        $dayOfWeek = $slotDateTime->dayOfWeek; // 0=Sunday, 6=Saturday
+        if ($dayOfWeek === 0 || $dayOfWeek === 6) {
+            return back()->with('error', 'Le cabinet est fermé le week-end (samedi et dimanche).');
+        }
+
+        // Enforce working hours: 08:00–12:00 and 14:00–18:00
+        $slotTime = $slotDateTime->format('H:i');
+        $inMorning   = $slotTime >= '08:00' && $slotTime <= '11:30';
+        $inAfternoon = $slotTime >= '14:00' && $slotTime <= '17:30';
+        if (!$inMorning && !$inAfternoon) {
+            return back()->with('error', 'Les rendez-vous sont disponibles de 08h00 à 12h00 et de 14h00 à 18h00, du lundi au vendredi.');
+        }
+
         $exists = RendezVous::where('medecin_id', $request->medecin_id)
             ->where('date_rendez_vous', $request->date_rendez_vous)
             ->where('heure_rendez_vous', $request->heure_rendez_vous)
@@ -99,13 +120,6 @@ class RendezVousController extends Controller
 
         if ($exists) {
             return back()->with('error', 'Ce creneau est deja reserve.');
-        }
-
-        // Server-side guard: reject slots in the past or within the next 60 minutes
-        $slotDateTime = \Carbon\Carbon::parse($request->date_rendez_vous . ' ' . $request->heure_rendez_vous);
-
-        if (now()->diffInMinutes($slotDateTime, false) < 60) {
-            return back()->with('error', 'Impossible de réserver un créneau dans moins de 60 minutes ou dans le passé.');
         }
 
         $user = Auth::user();
@@ -123,6 +137,8 @@ class RendezVousController extends Controller
                 'heure_rendez_vous' => $request->heure_rendez_vous,
                 'statut' => 'en_attente',
             ]);
+
+        Mail::to($user->email)->send(new ConfirmationRendezVousMail($rendezVous));
 
         return redirect()
             ->route('rendezvous.confirmation', $rendezVous->id)

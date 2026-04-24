@@ -311,28 +311,17 @@
                 <div class="glass-badge p-6 rounded-2xl border border-white/50 text-center">
                     <p class="text-sm font-medium mb-1">Besoin de modifier ou annuler ?</p>
                     <p class="text-xs text-on-surface-variant mb-4">Contactez-nous au moins 24h à l'avance.</p>
-                    <a class="text-primary font-bold text-lg" href="tel:+212522000000">+212 522 00 00 00</a>
+                    <a class="text-primary font-bold text-lg" href="tel:+212641371472">+212 641 371 472</a>
                 </div>
             </div>
         </div>
     </main>
     <!-- Footer -->
-    <footer class="bg-slate-50 dark:bg-slate-950 border-t border-slate-200/50 dark:border-slate-800/50 w-full py-12">
-        <div
-            class="flex flex-col md:flex-row justify-between items-center px-8 max-w-7xl mx-auto space-y-4 md:space-y-0">
-            <div class="flex flex-col items-center md:items-start space-y-2">
-                <div class="text-lg font-bold text-teal-800 dark:text-teal-300">Clinical Excellence</div>
-                <div class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-widest">© 2024 Clinical
-                    Excellence Medical Group. All rights reserved.</div>
-            </div>
-            <div class="flex space-x-6">
-                <a class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-widest hover:text-teal-600 transition-colors"
-                    href="#">Privacy Policy</a>
-                <a class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-widest hover:text-teal-600 transition-colors"
-                    href="#">Terms of Service</a>
-                <a class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-widest hover:text-teal-600 transition-colors"
-                    href="#">Cookie Settings</a>
-            </div>
+    <footer class="w-full py-6 mt-auto bg-white border-t border-slate-200 flex flex-col md:flex-row justify-between items-center px-8">
+        <div class="text-xs text-slate-500 mb-4 md:mb-0">© 2026 Cabinet Médical. Tous droits réservés.</div>
+        <div class="flex gap-6">
+            <a class="text-xs text-slate-500 hover:text-teal-500 transition-colors" href="#">Politique de confidentialité</a>
+            <a class="text-xs text-slate-500 hover:text-teal-500 transition-colors" href="#">Conditions d'utilisation</a>
         </div>
     </footer>
 </body>

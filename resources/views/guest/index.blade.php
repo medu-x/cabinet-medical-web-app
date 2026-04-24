@@ -100,17 +100,28 @@
     <!-- TopNavBar -->
     <nav class="bg-transparent docked full-width top-0 z-50">
         <div class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
-            <div class="text-xl font-bold text-teal-800 dark:text-teal-300">Cabinet Médical</div>
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white shadow-md">
+                    <span class="material-symbols-outlined text-[20px]">medical_services</span>
+                </div>
+                <span class="text-xl font-bold text-teal-800 dark:text-teal-300">Cabinet Médical</span>
+            </div>
             <div class="hidden md:flex gap-8 items-center">
                 <a class="font-['Inter'] font-semibold text-sm tracking-tight text-teal-700 dark:text-teal-400 border-b-2 border-teal-700 hover:text-teal-600 transition-colors" href="#">Accueil</a>
                 <a class="font-['Inter'] font-medium text-sm tracking-tight text-slate-600 dark:text-slate-400 hover:text-teal-600 transition-colors" href="#services">Services</a>
-                <a class="font-['Inter'] font-medium text-sm tracking-tight text-slate-600 dark:text-slate-400 hover:text-teal-600 transition-colors" href="#a-propos">À propos</a>
-                <a class="font-['Inter'] font-medium text-sm tracking-tight text-slate-600 dark:text-slate-400 hover:text-teal-600 transition-colors" href="#medecins">Médecins</a>
-                <a class="font-['Inter'] font-medium text-sm tracking-tight text-slate-600 dark:text-slate-400 hover:text-teal-600 transition-colors" href="#contact">Contact</a>
+                <a class="font-['Inter'] font-medium text-sm tracking-tight text-slate-600 dark:text-slate-400 hover:text-teal-600 transition-colors" href="#horaires">Horaires</a>
             </div>
             <div class="flex items-center gap-4">
-                <a class="px-5 py-2 text-sm font-medium text-teal-700 hover:text-teal-600 transition-colors" href="{{ url('/login') }}">Se connecter</a>
-                <a class="bg-gradient-to-br from-primary to-primary-container text-white px-6 py-2.5 rounded-xl text-sm font-semibold clinical-shadow scale-95 active:duration-150 transition-all" href="{{url('/register')}}">S'inscrire</a>
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="px-5 py-2 text-sm font-medium text-teal-700 hover:text-teal-600 transition-colors">Mon espace</a>
+                    <a href="{{ route('logout') }}" class="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-red-600 hover:text-red-700 border border-red-200 rounded-xl hover:bg-red-50 transition-all">
+                        <span class="material-symbols-outlined text-[16px]">logout</span>
+                        Déconnexion
+                    </a>
+                @else
+                    <a class="px-5 py-2 text-sm font-medium text-teal-700 hover:text-teal-600 transition-colors" href="{{ url('/login') }}">Se connecter</a>
+                    <a class="bg-gradient-to-br from-primary to-primary-container text-white px-6 py-2.5 rounded-xl text-sm font-semibold clinical-shadow scale-95 active:duration-150 transition-all" href="{{ url('/register') }}">S'inscrire</a>
+                @endauth
             </div>
         </div>
     </nav>
@@ -119,10 +130,7 @@
         <div class="absolute inset-0 bg-gradient-to-tr from-surface-container-low via-surface to-primary/5 -z-10"></div>
         <div class="max-w-7xl mx-auto px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div class="space-y-8">
-                <div class="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase">
-                    <span class="material-symbols-outlined text-base">verified_user</span>
-                    Clinique Certifiée ISO 9001
-                </div>
+
                 <h1 class="text-5xl lg:text-7xl font-extrabold tracking-tight text-on-surface leading-[1.1]">
                     Votre santé, <br /><span class="text-primary">notre priorité</span>.
                 </h1>
@@ -213,120 +221,9 @@
             </div>
         </div>
     </section>
-    <!-- À Propos Section -->
-    <section class="py-24" id="a-propos">
-        <div class="max-w-7xl mx-auto px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                <div class="order-2 lg:order-1">
-                    <div class="relative">
-                        <div class="aspect-[4/5] rounded-[2rem] overflow-hidden">
-                            <img class="w-full h-full object-cover" data-alt="professional medical team standing in a modern clinic hallway, wearing white coats and scrubs with warm confident expressions" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3T9qRpmyplWsbNGBXzzX1JZ8bYHxX3YmrAvVvydUYCIeVhpxritgq6xoZB4mu3OEyEnqaU9YSmLxYM1crt_bg5e2p3MJ5SNbcUBF5D1GDrqK3_iQTMn3H8NnCMjIKeNFSRqCYm0zzigq-GP9JO591_LSZADQN9nSvRqs-1njJhgsgpunwhWz9f2H6W-0TJZyqixmsQZuJmzVtdswqnf9ZCV2QyVPUJBTQezV8c5HjQA3oD7Lqq3d5eXl4nCpXP8RufUL4QViTCPQ" />
-                        </div>
-                        <div class="absolute -top-6 -right-6 bg-primary text-white p-8 rounded-3xl clinical-shadow">
-                            <div class="text-4xl font-black">15+</div>
-                            <div class="text-sm font-medium opacity-80 uppercase tracking-widest mt-1">Ans d'Excellence</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="order-1 lg:order-2 space-y-6">
-                    <h2 class="text-4xl font-extrabold leading-tight">Une tradition de confiance et d'innovation médicale.</h2>
-                    <p class="text-on-surface-variant text-lg">Depuis plus de 15 ans, notre cabinet s'engage à offrir une médecine humaine, précise et accessible. Notre approche repose sur trois piliers : l'excellence clinique, le respect du patient et l'innovation constante.</p>
-                    <div class="space-y-4 pt-4">
-                        <div class="flex items-center gap-4">
-                            <div class="w-6 h-6 rounded-full bg-teal-100 flex items-center justify-center text-teal-700">
-                                <span class="material-symbols-outlined text-sm font-bold">check</span>
-                            </div>
-                            <span class="font-semibold">Plus de 50,000 patients satisfaits</span>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <div class="w-6 h-6 rounded-full bg-teal-100 flex items-center justify-center text-teal-700">
-                                <span class="material-symbols-outlined text-sm font-bold">check</span>
-                            </div>
-                            <span class="font-semibold">Équipement de diagnostic de dernière génération</span>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <div class="w-6 h-6 rounded-full bg-teal-100 flex items-center justify-center text-teal-700">
-                                <span class="material-symbols-outlined text-sm font-bold">check</span>
-                            </div>
-                            <span class="font-semibold">Réseau de spécialistes coordonné</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- Médecins Section -->
-    <section class="py-24 bg-surface-container" id="medecins">
-        <div class="max-w-7xl mx-auto px-8">
-            <div class="flex justify-between items-end mb-16">
-                <div class="max-w-xl">
-                    <h2 class="text-3xl font-extrabold mb-4">Nos Médecins Experts</h2>
-                    <p class="text-on-surface-variant">Une équipe multidisciplinaire dédiée à votre santé, formée dans les meilleures facultés de médecine.</p>
-                </div>
-                <button class="hidden md:block text-primary font-bold hover:underline">Voir toute l'équipe</button>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Doctor Card -->
-                <div class="bg-surface-container-lowest p-4 rounded-[2rem] clinical-shadow group">
-                    <div class="aspect-square rounded-2xl overflow-hidden mb-4">
-                        <img class="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500" data-alt="professional male doctor in a white lab coat with a stethoscope around his neck, smiling warmly against a clean clinical background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlQoNnn52ukm-invfpgwdU4qL4eHdDkl5tQRYycOJBktgGZdcjQflaZ8KFZeFEye-vuysu4d3MBVqKxtP6G3KCVqPVyBlOYA3jzrhjKM-T5AAnfv7QaQk0EDgeZDleITstQvSvJq0dLPzm96nNMEgBrsppGcHPK8gHSKQaROsy4Z5TiSS3u9E-owPQvGvnmeAoMuJAtDqkmGuP-nh7O2k7_llpo8Hfl4owJsLJBmNtr3s0Q2DiVdT0HhQXQ_cizse5forTPL2BO64" />
-                    </div>
-                    <div class="px-2 pb-2">
-                        <h4 class="text-lg font-bold">Dr. Jean Dupont</h4>
-                        <p class="text-primary text-sm font-medium">Cardiologue</p>
-                        <div class="flex items-center gap-1 mt-3">
-                            <span class="material-symbols-outlined text-sm text-tertiary-container" data-weight="fill">star</span>
-                            <span class="text-xs font-bold">4.9 (120 avis)</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Doctor Card -->
-                <div class="bg-surface-container-lowest p-4 rounded-[2rem] clinical-shadow group">
-                    <div class="aspect-square rounded-2xl overflow-hidden mb-4">
-                        <img class="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500" data-alt="female doctor with glasses and white coat, looking professional and approachable in a modern medical office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2y5x50P1r40EsZVYPW5G2A-ne1mjMRS1IvhcCtFXrvFy8dRZnKvNspn2lHxVM8xjRUeKVT6rfNo1T9mv71Y7mFQ_MHsVYyhPgGLRWd8-17ibuYNESnq19XPcUrJ-3yxPcupnaN33Fsyn2ld26hTOfqxDxY0YniS713qlp75S1oHrb4y8j6LzdSs-2wsw-xoPqLM0woaedfGFx5TYpGVDtx2UtRcrMGNxSNzYz1Y4iSogkvy2_-R88vO3hRbNlhvne0cxDrLgl8q0" />
-                    </div>
-                    <div class="px-2 pb-2">
-                        <h4 class="text-lg font-bold">Dr. Sarah Martin</h4>
-                        <p class="text-primary text-sm font-medium">Pédiatre</p>
-                        <div class="flex items-center gap-1 mt-3">
-                            <span class="material-symbols-outlined text-sm text-tertiary-container" data-weight="fill">star</span>
-                            <span class="text-xs font-bold">5.0 (98 avis)</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Doctor Card -->
-                <div class="bg-surface-container-lowest p-4 rounded-[2rem] clinical-shadow group">
-                    <div class="aspect-square rounded-2xl overflow-hidden mb-4">
-                        <img class="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500" data-alt="male surgeon in blue scrubs looking focused and professional in a bright clinical hallway" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1NAR5idezKhtRh2ETqND28Mu-TTDTEdYONwjHQXtQpDvUMX93tHz6yYI486v5pfhy-cA26OcKQkSHD6wIOLj1lZxwms1wJxAfwvsJMFvLdRdebQF97zn-ntR1vuPYc8Ka27jJHgn9WVZ6t1eJ2_EZDgK0Jh7aeprMkZ5VTppfi22flAofOQY_9a7tVzN1mN8bSOwSYMjHpbnfbUm4endXS-2W95b5ghLUB6GirErVqUTYxbi96lTGsaEZAedvXeD8QXconFDUCTE" />
-                    </div>
-                    <div class="px-2 pb-2">
-                        <h4 class="text-lg font-bold">Dr. Marc Leroy</h4>
-                        <p class="text-primary text-sm font-medium">Généraliste</p>
-                        <div class="flex items-center gap-1 mt-3">
-                            <span class="material-symbols-outlined text-sm text-tertiary-container" data-weight="fill">star</span>
-                            <span class="text-xs font-bold">4.8 (215 avis)</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Doctor Card -->
-                <div class="bg-surface-container-lowest p-4 rounded-[2rem] clinical-shadow group">
-                    <div class="aspect-square rounded-2xl overflow-hidden mb-4">
-                        <img class="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500" data-alt="portrait of a female medical professional in scrubs with a digital tablet, smiling in a clinical workspace" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnj_Ieoxuv3CEyze-ZGM-vy0u-e32u7eh84Qnp3LFkRzfAON5LYqwPHquOnJIp9DmmuoMsZm02WUWHIQDQTwsRtVgbf1EvwuW0pvGGfziY-2SnEevVJM25W0cZzo0VjjjLnddhLxK7uR1FGsNEAA_n5pMQIE7QMUy3HGoidV60j9CjSDCJc6EmhLFqTnbY8oOORLJZ1zEqBr3rq4kTAPyuDNnQHOwR2H8Iw357btYBPLQXnvCm4wp4Cz-PFXSpRVaAB18g5FcNYIY" />
-                    </div>
-                    <div class="px-2 pb-2">
-                        <h4 class="text-lg font-bold">Dr. Elena Costa</h4>
-                        <p class="text-primary text-sm font-medium">Dermatologue</p>
-                        <div class="flex items-center gap-1 mt-3">
-                            <span class="material-symbols-outlined text-sm text-tertiary-container" data-weight="fill">star</span>
-                            <span class="text-xs font-bold">4.9 (85 avis)</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- Footer / Contact Section -->
-    <footer class="bg-slate-900 text-slate-400 py-20 mt-auto" id="contact">
+
+    <!-- Footer / Horaires Section -->
+    <footer class="bg-slate-900 text-slate-400 py-20 mt-auto" id="horaires">
         <div class="max-w-7xl mx-auto px-8 grid grid-cols-1 lg:grid-cols-2 gap-16">
             <div class="space-y-8">
                 <div class="text-teal-500 font-bold text-2xl">Cabinet Médical</div>
@@ -338,16 +235,20 @@
                     </h3>
                     <div class="space-y-3 text-sm">
                         <div class="flex justify-between border-b border-slate-700 pb-2">
-                            <span>Lundi - Vendredi</span>
-                            <span class="text-white font-medium">08:00 - 20:00</span>
+                            <span>Lundi - Vendredi (matin)</span>
+                            <span class="text-white font-medium">08:00 - 12:00</span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-700 pb-2">
+                            <span>Lundi - Vendredi (après-midi)</span>
+                            <span class="text-white font-medium">14:00 - 18:00</span>
                         </div>
                         <div class="flex justify-between border-b border-slate-700 pb-2">
                             <span>Samedi</span>
-                            <span class="text-white font-medium">09:00 - 14:00</span>
+                            <span class="text-red-400 font-bold uppercase text-[10px]">Fermé</span>
                         </div>
                         <div class="flex justify-between">
                             <span>Dimanche</span>
-                            <span class="text-teal-500 font-bold uppercase text-[10px]">Urgences uniquement</span>
+                            <span class="text-red-400 font-bold uppercase text-[10px]">Fermé</span>
                         </div>
                     </div>
                 </div>
@@ -360,33 +261,42 @@
                     </a>
                 </div>
             </div>
-            <div class="bg-white p-10 rounded-[2rem] clinical-shadow">
-                <h3 class="text-2xl font-bold text-on-surface mb-6">Contactez-nous</h3>
-                <form class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-slate-500 uppercase tracking-tighter">Nom</label>
-                            <input class="w-full bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all text-on-surface" placeholder="Jean" type="text" />
+            <div class="space-y-8">
+                <div class="bg-slate-800/50 p-8 rounded-3xl border border-slate-700/50">
+                    <h3 class="text-white font-bold mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-teal-400">location_on</span>
+                        Nous trouver
+                    </h3>
+                    <div class="space-y-4 text-sm">
+                        <div class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-teal-400 text-[18px] mt-0.5">home</span>
+                            <span>123 Rue de Hassan 2, Guéliz, Marrakech</span>
                         </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-slate-500 uppercase tracking-tighter">Prénom</label>
-                            <input class="w-full bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all text-on-surface" placeholder="Dupont" type="text" />
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-teal-400 text-[18px]">call</span>
+                            <span>+212 641 371 472</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-teal-400 text-[18px]">mail</span>
+                            <span>contact@cabinet-medical.ma</span>
                         </div>
                     </div>
-                    <div class="space-y-1">
-                        <label class="text-xs font-bold text-slate-500 uppercase tracking-tighter">Email</label>
-                        <input class="w-full bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all text-on-surface" placeholder="jean.dupont@email.com" type="email" />
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-xs font-bold text-slate-500 uppercase tracking-tighter">Message</label>
-                        <textarea class="w-full bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all text-on-surface" placeholder="Comment pouvons-nous vous aider ?" rows="4"></textarea>
-                    </div>
-                    <button class="w-full bg-primary text-white py-4 rounded-xl font-bold clinical-shadow hover:bg-primary-container transition-all" type="submit">Envoyer le message</button>
-                </form>
+                </div>
+                <div class="bg-slate-800/50 p-8 rounded-3xl border border-slate-700/50">
+                    <h3 class="text-white font-bold mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-teal-400">calendar_month</span>
+                        Prendre rendez-vous
+                    </h3>
+                    <p class="text-slate-400 text-sm mb-6">Réservez votre consultation en ligne facilement et rapidement via notre plateforme sécurisée.</p>
+                    <a href="{{ url('/login') }}" class="inline-flex items-center gap-2 bg-teal-500 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-teal-400 transition-all">
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                        Se connecter pour réserver
+                    </a>
+                </div>
             </div>
         </div>
         <div class="max-w-7xl mx-auto px-8 mt-20 pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
-            <div>© 2024 Cabinet Médical. Excellence Clinique.</div>
+            <div>© 2026 Cabinet Médical. Excellence Clinique.</div>
             <div class="flex gap-8">
                 <a class="hover:text-teal-400 transition-colors" href="#">Mentions Légales</a>
                 <a class="hover:text-teal-400 transition-colors" href="#">Confidentialité</a>
