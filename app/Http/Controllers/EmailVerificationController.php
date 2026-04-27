@@ -87,9 +87,14 @@ class EmailVerificationController extends Controller
             'email_verification_token' => $code . '|' . $expiry,
         ]);
 
-        Mail::to($user->email)->send(new EmailVerificationMail((string) $code, $user->name));
+        try {
+            Mail::to($user->email)->send(new EmailVerificationMail((string) $code, $user->name));
+            $message = 'Un nouveau code a été envoyé à ' . $email;
+        } catch (\Throwable) {
+            $message = 'L\'envoi d\'email a échoué. Réessayez dans quelques instants.';
+        }
 
         return redirect()->route('email.verify.form')
-            ->with('success', 'Un nouveau code a été envoyé à ' . $email);
+            ->with('success', $message);
     }
 }

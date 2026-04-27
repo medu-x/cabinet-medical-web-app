@@ -79,14 +79,24 @@ class AuthController extends Controller
             'email_verification_token' => $code . '|' . $expiry,
         ]);
 
-        Mail::to($user->email)->send(new EmailVerificationMail((string) $code, $user->name));
+        $emailSent = false;
+        try {
+            Mail::to($user->email)->send(new EmailVerificationMail((string) $code, $user->name));
+            $emailSent = true;
+        } catch (\Throwable $exception) {
+            \Log::error('Email verification send failed: ' . $exception->getMessage());
+        }
 
         // Store email in session so the verification page knows who to verify
         session(['verify_email' => $user->email]);
 
+        $message = $emailSent
+            ? 'Un code de vérification a été envoyé à ' . $user->email
+            : 'Compte créé. L\'envoi d\'email a échoué — utilisez "Renvoyer le code" sur la page suivante.';
+
         // STEP 4: Redirect to the email verification page (not logged in yet)
         return redirect()->route('email.verify.form')
-            ->with('success', 'Un code de vérification a été envoyé à ' . $user->email);
+            ->with('success', $message);
     }
 
 
@@ -119,7 +129,7 @@ class AuthController extends Controller
         // $request->boolean('remember') reads the "remember me" checkbox
         try {
             $authenticated = Auth::attempt($credentials, $request->boolean('remember'));
-        } catch (RuntimeException $exception) {
+        } catch (RuntimeException) {
             $authenticated = false;
         }
 
